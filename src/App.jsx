@@ -1,20 +1,39 @@
-import './css/App.css'
+import "./css/App.css";
 
-import DocumentStatus from './components/general/DocumentStatuses'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import SignIn from './pages/SignIn'
+import { useState, createContext } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import SignIn from "./pages/SignIn";
+import DocumentStatuses from "./components/general/DocumentStatuses";
+import Header from "./components/general/header/Header";
+
+export const LoginContext = createContext();
+
 function App() {
+  const [loggedIn, setLoggedIn] = useState(
+    localStorage.accessToken ? true : false
+  );
+
+  function changeLoggedIn(value) {
+    setLoggedIn(value);
+    if (value === false) {
+      localStorage.clear();
+    }
+  }
 
   return (
-    <>
-    <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<SignIn />} />
-          </Routes>
+    <LoginContext.Provider value={[loggedIn, changeLoggedIn]}>
+      <BrowserRouter>
+      <Header>
+        <Routes>
+          <Route path="/login" element={<SignIn />} />
+          <Route path="/documentstatuses" element={<DocumentStatuses/> } />
+        </Routes>
+        </Header>
       </BrowserRouter>
 
-    </>
-  )
+    </LoginContext.Provider>
+  );
 }
 
-export default App
+export default App;

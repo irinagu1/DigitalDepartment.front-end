@@ -50,8 +50,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn() {
-  const [mode, setMode] = React.useState('light');
-  const [showCustomTheme, setShowCustomTheme] = React.useState(true);
+  const mode = 'light';
   const defaultTheme = createTheme({ palette: { mode } });
   const SignInTheme = createTheme(getSignInTheme(mode));
   const [emailError, setEmailError] = React.useState(false);
@@ -59,31 +58,6 @@ export default function SignIn() {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
-
-  // This code only runs on the client side, to determine the system color preference
-  React.useEffect(() => {
-    // Check if there is a preferred mode in localStorage
-    const savedMode = localStorage.getItem('themeMode');
-    if (savedMode) {
-      setMode(savedMode);
-    } else {
-      // If no preference is found, it uses system preference
-      const systemPrefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)',
-      ).matches;
-      setMode(systemPrefersDark ? 'dark' : 'light');
-    }
-  }, []);
-
-  const toggleColorMode = () => {
-    const newMode = mode === 'dark' ? 'light' : 'dark';
-    setMode(newMode);
-    localStorage.setItem('themeMode', newMode); // Save the selected mode to localStorage
-  };
-
-  const toggleCustomTheme = () => {
-    setShowCustomTheme((prev) => !prev);
-  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -131,7 +105,6 @@ export default function SignIn() {
 
   return (
     <TemplateFrame
-      toggleCustomTheme={toggleCustomTheme}
       showCustomTheme={showCustomTheme}
       mode={mode}
       toggleColorMode={toggleColorMode}

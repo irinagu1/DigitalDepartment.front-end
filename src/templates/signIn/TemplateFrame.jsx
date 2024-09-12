@@ -30,14 +30,10 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 
 function TemplateFrame({
   showCustomTheme,
-  toggleCustomTheme,
   mode,
   toggleColorMode,
   children,
 }) {
-  const handleChange = (event) => {
-    toggleCustomTheme(event.target.value === 'custom');
-  };
   const signInTheme = createTheme(getSignInTheme(mode));
 
   return (
@@ -106,8 +102,7 @@ TemplateFrame.propTypes = {
   children: PropTypes.node,
   mode: PropTypes.oneOf(['dark', 'light']).isRequired,
   showCustomTheme: PropTypes.bool.isRequired,
-  toggleColorMode: PropTypes.func.isRequired,
-  toggleCustomTheme: PropTypes.func.isRequired,
+  toggleColorMode: PropTypes.func.isRequired
 };
 
 export default TemplateFrame;

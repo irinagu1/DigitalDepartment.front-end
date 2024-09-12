@@ -52,7 +52,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 
 export default function SignIn() {
   const mode = "light";
-  const defaultTheme = createTheme({ palette: { mode },  });
+  const defaultTheme = createTheme({ palette: { mode } });
 
   const [loginError, setLoginError] = React.useState(false);
   const [loginErrorMessage, setLoginErrorMessage] = React.useState("");
@@ -99,10 +99,12 @@ export default function SignIn() {
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         setLoggedIn(true);
+        getPermissions();
         /*  navigate(location?.state?.previousUrl ?
           location.state.previousUrl : '/doccategories'
        );*/
-        navigate("/documentstatuses");
+        
+     //   navigate("/documentstatuses");
         console.log(localStorage);
       })
       .catch((e) => {
@@ -110,6 +112,23 @@ export default function SignIn() {
       });
   };
 
+  function getPermissions(){
+
+    fetch(baseurl + "users",{
+      headers:{
+        'Content-type':'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+      }
+    } )
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      localStorage.setItem('permissions', data);
+      console.log("perms");
+      console.log(data);
+    });
+  }
   const validateInputs = () => {
     const login = document.getElementById("login");
     const password = document.getElementById("password");
@@ -136,9 +155,19 @@ export default function SignIn() {
 
     return isValid;
   };
-
+  function getF(){
+ fetch(baseurl + "users")
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            console.log("perms");
+            console.log(data);
+          });
+  }
   return (
     <ThemeProvider theme={defaultTheme}>
+    
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
@@ -201,7 +230,6 @@ export default function SignIn() {
               />
             </FormControl>
 
-           
             {errorStatus === 401 ? (
               <Typography sx={{ color: "red" }}>
                 Неверный логин или пароль
@@ -213,7 +241,7 @@ export default function SignIn() {
                 Ошибка со стороны сервера
               </Typography>
             ) : null}
-            
+
             <Button
               type="submit"
               fullWidth
@@ -222,6 +250,7 @@ export default function SignIn() {
             >
               Войти
             </Button>
+            <Button onClick={getF}>ddd</Button>
           </Box>
         </Card>
       </SignInContainer>

@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import SignIn from "./pages/SignIn";
 import DocumentStatuses from "./components/general/DocumentStatuses";
+import Header from "./components/general/header/Header";
 
 export const LoginContext = createContext();
 
@@ -23,11 +24,14 @@ function App() {
   return (
     <LoginContext.Provider value={[loggedIn, changeLoggedIn]}>
       <BrowserRouter>
+      <Header>
         <Routes>
           <Route path="/login" element={<SignIn />} />
           <Route path="/documentstatuses" element={<DocumentStatuses/> } />
         </Routes>
+        </Header>
       </BrowserRouter>
+
     </LoginContext.Provider>
   );
 }

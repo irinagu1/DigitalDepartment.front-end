@@ -14,6 +14,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import Typography from "@mui/material/Typography";
 import MyToolbar from "./myToolbar";
 import MyPhoneToolbar from "./myPhoneToolbar";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: "flex",
@@ -30,112 +31,128 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 export default function Header(props) {
-
+  const mode = "light";
+  const defaultTheme = createTheme({ palette: { mode } });
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
+  function logout() {
+    localStorage.clear();
+    navigate("login");
+  }
+
   return (
     <>
-    <AppBar
-      position="fixed"
-      sx={{
-        boxShadow: 0,
-        bgcolor: "transparent",
-        backgroundImage: "none",
-        mt: 1,
-      }}
-    >
-      <Container maxWidth="lg">
-        <StyledToolbar variant="dense" disableGutters >
-        <Typography
-                    sx={{
-                      mr: 'auto',
-                      color: "black",
-                      textDecoration: "none",
-                    }}
-                  >
-                    АИС "Цифровая кафедра"
-                  </Typography>
-          <Box
-            sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
-          >
-
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <Button variant="text" color="info" size="small">
-                Главная
-              </Button>
-              {localStorage.getItem("permissions") ? <MyToolbar /> : null}
+          <ThemeProvider theme={defaultTheme}>
+      <AppBar
+        position="fixed"
+        sx={{
+          boxShadow: 0,
+          bgcolor: "transparent",
+          backgroundImage: "none",
+          mt: 1,
+        }}
+      >
+        <Container maxWidth="lg">
+          <StyledToolbar variant="dense" disableGutters>
+            <Typography
+              sx={{
+                mr: "auto",
+                color: "black",
+                textDecoration: "none",
+              }}
+            >
+              АИС "Цифровая кафедра"
+            </Typography>
+            <Box
+              sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
+            >
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <Button variant="text" color="info" size="small">
+                  Главная
+                </Button>
+                {localStorage.getItem("permissions") ? <MyToolbar /> : null}
+              </Box>
             </Box>
-          </Box>
 
-          <Box
-            sx={{
-              display: { xs: "none", md: "flex" },
-              gap: 1,
-              alignItems: "center",
-            }}
-          >
-            <Button color="primary" variant="text" size="small">
-              Выйти
-            </Button>
-          </Box>
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                gap: 1,
+                alignItems: "center",
+              }}
+            >
+              <Button
+                color="primary"
+                variant="text"
+                size="small"
+                onClick={logout}
+              >
+                Выйти
+              </Button>
+            </Box>
 
-          <Box sx={{ display: { sm: "flex", md: "none" } }}>
-            <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
-              <MenuIcon />
-            </IconButton>
+            <Box sx={{ display: { sm: "flex", md: "none" } }}>
+              <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
+                <MenuIcon />
+              </IconButton>
 
-            <Drawer anchor="top" open={open} onClose={toggleDrawer(false)}>
-              <Box sx={{ p: 2, backgroundColor: "background.default" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
+              <Drawer anchor="top" open={open} onClose={toggleDrawer(false)}>
+                <Box sx={{ p: 2, backgroundColor: "background.default" }}>
                   <Box
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                  
+                      justifyContent: "space-between",
                     }}
                   >
-                    <IconButton onClick={toggleDrawer(false)}>
-                      <CloseRoundedIcon />
-                    </IconButton>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <IconButton onClick={toggleDrawer(false)}>
+                        <CloseRoundedIcon />
+                      </IconButton>
+                    </Box>
+                    <Typography
+                      sx={{
+                        mr: "auto",
+                        color: "black",
+                        textDecoration: "none",
+                      }}
+                    >
+                      АИС "Цифровая кафедра"
+                    </Typography>
                   </Box>
-                  <Typography
-                    sx={{
-                      mr: 'auto',
-                      color: "black",
-                      textDecoration: "none",
-                    }}
-                  >
-                    АИС "Цифровая кафедра"
-                  </Typography>
-                </Box>
-                <Divider sx={{ my: 3 }} />
+                  <Divider sx={{ my: 3 }} />
 
-                <MenuItem>Главная</MenuItem>
-                {localStorage.getItem("permissions") ? (
-                  <MyPhoneToolbar />
-                ) : null}
-                <MenuItem>
-                  <Button color="primary" variant="outlined" fullWidth>
-                    Выйти
-                  </Button>
-                </MenuItem>
-              </Box>
-            </Drawer>
-          </Box>
-        </StyledToolbar>
-      </Container>
-    </AppBar>
-    {props.children}
+                  <MenuItem>Главная</MenuItem>
+                  {localStorage.getItem("permissions") ? (
+                    <MyPhoneToolbar />
+                  ) : null}
+                  <MenuItem>
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      fullWidth
+                      onClick={logout}
+                    >
+                      Выйти
+                    </Button>
+                  </MenuItem>
+                </Box>
+              </Drawer>
+            </Box>
+          </StyledToolbar>
+        </Container>
+      </AppBar>
+      {props.children}
+      </ThemeProvider>
     </>
   );
 }

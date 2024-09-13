@@ -1,3 +1,4 @@
+import Main from "../../pages/Main/Main";
 import { baseurl } from "../../shared";
 import Button from "@mui/material/Button";
 export default function DocumentStatuses() {
@@ -18,6 +19,7 @@ export default function DocumentStatuses() {
   }
   return (
     <>
+      <Main/>
       <h1>DocStatuses</h1> <Button onClick={getF}>ddd</Button>
     </>
   );

@@ -1,15 +1,16 @@
 import { useState } from "react";
 
 export default function useFetch(url, { method, headers, body } = {}) {
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   const [errorStatus, setErrorStatus] = useState();
 
-  function request(prop) {
+  function request() {
+    
     console.log('in the hook')
     fetch(url, {
       method: method,
       headers: headers,
-      body: prop,
+      body: body,
     })
       .then((response) => {
         if (!response.ok) {
@@ -17,13 +18,14 @@ export default function useFetch(url, { method, headers, body } = {}) {
         }
         return response.json();
       })
-      .then((data) => {
-        setData(data);
+      .then((d) => {
+        setData(d);
+   //     console.log(data);
       })
       .catch((e) => {
         setErrorStatus(e);
       });
   }
-
+  
   return { request, data, errorStatus };
 }

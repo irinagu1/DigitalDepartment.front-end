@@ -1,13 +1,13 @@
 import Button from "@mui/material/Button";
 
+
 export default function MyToolbar() {
   return (
     <>
       {localStorage.getItem("permissions").includes("Create") ? (
+
         <Button
-          key="toalldocs"
-          onClick={handleCloseNavMenu}
-          sx={{ my: 2, color: "white", display: "block" }}
+          variant="text" color="info" size="small"
         >
           К списку документов
         </Button>
@@ -15,9 +15,7 @@ export default function MyToolbar() {
 
       {localStorage.getItem("permissions").includes("Read") ? (
         <Button
-          key="adddoc"
-          onClick={handleCloseNavMenu}
-          sx={{ my: 2, color: "white", display: "block" }}
+         variant="text" color="info" size="small"
         >
           Загрузить документ
         </Button>
@@ -25,9 +23,7 @@ export default function MyToolbar() {
 
       {localStorage.getItem("permissions").includes("Update") ? (
         <Button
-          key="aboutme"
-          onClick={handleCloseNavMenu}
-          sx={{ my: 2, color: "white", display: "block" }}
+        variant="text" color="info" size="small"
         >
           Обо мне
         </Button>

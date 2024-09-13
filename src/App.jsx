@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import DocumentStatuses from "./components/general/DocumentStatuses";
 import Header from "./components/general/header/Header";
+import Main from "./pages/Main/Main";
 
 export const LoginContext = createContext();
 
@@ -28,6 +29,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<SignIn />} />
           <Route path="/documentstatuses" element={<DocumentStatuses/> } />
+          <Route path="/main" element={<Main/>} />
         </Routes>
         </Header>
       </BrowserRouter>

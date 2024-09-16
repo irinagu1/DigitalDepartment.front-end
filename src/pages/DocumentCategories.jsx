@@ -17,13 +17,16 @@ export default function DocumentCategories() {
   const url = baseurl + "documentcategories";
   const [docCategories, setDocCategories] = useState([]);
 
-  const {request, data, errorStatus} = useFetch(url, {method: 'GET'});
+  const { data : allDocCat, errorStatus : allDocCatError, request } = useFetch(url, {method: 'GET'});
   
  
   useEffect(()=>{
     request();
-    console.log(data);
+    console.log('alldoccat' + allDocCat);
+    console.log('allddc error' + allDocCatError);
   }, []);
+
+
 
   const handleClick = () => {
     console.info('You clicked the filter chip.');
@@ -65,7 +68,7 @@ export default function DocumentCategories() {
             }}
           />
         </Box>
-        <TableDocumentCategories source={data}/>
+        <TableDocumentCategories source={allDocCat}/>
         </Container>
       </ThemeProvider>
     </>

@@ -8,6 +8,7 @@ import { LensTwoTone } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import { ListItem, NativeSelect } from "@mui/material";
 import TableFiles from "../components/SendMessage/TableFiles";
+import MainForm from "../components/SendMessage/MainForm";
 
 export default function SendMessage() {
   const [inputsFiles, setInputsFiles] = useState([]);
@@ -121,17 +122,11 @@ export default function SendMessage() {
     console.log('sendfiles');
   }
 
-
-  let InputFile = <input type="file" onChange={getFileContext} />;
   return (
     <>
       <Container sx={{ mt: "100px", ml: "100px" }}>
        
-        <form name="mainform">
-            <TableFiles sendData={()=>{sendFiles()}} />
-         
-          
-        </form>
+      <MainForm></MainForm>
         {progressInstance}
       </Container>
     </>

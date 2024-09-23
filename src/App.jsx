@@ -8,6 +8,8 @@ import DocumentStatuses from "./components/general/DocumentStatuses";
 import Header from "./components/general/header/Header";
 import Main from "./pages/Main/Main";
 import DocumentCategories from "./pages/DocumentCategories";
+import SendMessage from "./pages/SendMessage";
+import AllDocuments from "./pages/AllDocuments";
 
 
 export const LoginContext = createContext();
@@ -32,9 +34,11 @@ function App() {
       <Header>
         <Routes>
           <Route path="/login" element={<SignIn />} />
+          <Route path="/main" element={<Main/>} />
+          <Route path="/sendmessage" element={<SendMessage/>} />
           <Route path="/documentstatuses" element={<DocumentStatuses/> } />
           <Route path="/documentcategories" element={<DocumentCategories/> } />
-          <Route path="/main" element={<Main/>} />
+          <Route path="/alldocuments" element={<AllDocuments/> } />
         </Routes>
         </Header>
 

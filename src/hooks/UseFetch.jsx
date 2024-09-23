@@ -21,7 +21,9 @@ export default function useFetch(url, { method, headers, body } = {}) {
   }
 
   function getData(currUrl, currHeaders, query){
-    fetch(currUrl + '?' + query, {
+    let part = '';
+    if (query) {part='?' + query;}
+    fetch(currUrl + part, {
       method: 'GET',
       headers: currHeaders
     })
@@ -33,7 +35,21 @@ export default function useFetch(url, { method, headers, body } = {}) {
         setErrorStatus(error);
       });
   }
-
+  function getInfo(currUrl, currHeaders){
+    let part = '';
+ 
+    fetch(currUrl + part, {
+      method: 'GET',
+      headers: currHeaders
+    })
+    .then((res) => res.json())
+      .then((d) => {
+        return d;
+      })
+      .catch((error) => {
+        setErrorStatus(error);
+      });
+  }
   function appendData(currUrl, currHeaders, newData) {
     fetch(currUrl, {
       method: "POST",
@@ -102,5 +118,5 @@ export default function useFetch(url, { method, headers, body } = {}) {
     console.log(newObject);
   }
 
-  return { data, errorStatus, request, getData, appendData, deleteData, updateData };
+  return { data, errorStatus, request, getData, appendData, deleteData, updateData, getInfo };
 }

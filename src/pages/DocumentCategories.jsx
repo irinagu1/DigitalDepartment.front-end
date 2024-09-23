@@ -13,29 +13,19 @@ import AddDocumentCategory from "../components/DocumentCategories/AddDocumentCat
 import AddDocumentCategoryModal from "../components/DocumentCategories/AddDocumentCategoryModal";
 import Modal from "@mui/material/Modal";
 import { LoginContext } from "../App";
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+
+const mode = "light";
 
 export default function DocumentCategories() {
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
-  const mode = "light";
-  const defaultTheme = createTheme({ palette: { mode } });
-
-  const url = baseurl + "documentcategories";
   const [docCategories, setDocCategories] = useState([]);
+
+  const defaultTheme = createTheme({ palette: { mode } });
+  const url = baseurl + "documentcategories";
 
   const {
     data: allDocCat,
-    errorStatus: allDocCatError,
+    errorStatus,
     request,
     getData,
     appendData,
@@ -58,9 +48,9 @@ export default function DocumentCategories() {
 
   useEffect(() => {
     request();
-
     setDocCategories(allDocCat);
   }, []);
+  
   useEffect(() => {
     setDocCategories(allDocCat);
   });

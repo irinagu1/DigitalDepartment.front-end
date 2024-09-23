@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NativeSelect } from "@mui/material";
 
 export default function SelectElement(props) {
   const [options, setOptions] = useState(props.list[0].id);
-
   return (
     <NativeSelect
       value={options}

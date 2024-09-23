@@ -10,8 +10,8 @@ import { ListItem, NativeSelect } from "@mui/material";
 import TableFiles from "../components/SendMessage/TableFiles";
 import MainForm from "../components/SendMessage/MainForm";
 
+
 export default function SendMessage() {
-  const [inputsFiles, setInputsFiles] = useState([]);
 
   const chunkSize = 1048576 * 3;
 
@@ -125,7 +125,6 @@ export default function SendMessage() {
   return (
     <>
       <Container sx={{ mt: "100px", ml: "100px" }}>
-       
       <MainForm></MainForm>
         {progressInstance}
       </Container>

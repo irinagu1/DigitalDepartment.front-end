@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+
 import TableRow from "@mui/material/TableRow";
-import { MenuItem, NativeSelect, Select } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
 import Button from "@mui/material/Button";
 import SelectElement from "./SelectElement";
 import FileFolder from "./FileFolder";
+
 export default function MyRow(props) {
+
   function handleDocCat(objId, docCatId) {
     props.docCatChange(objId, docCatId);
   }
@@ -19,7 +20,7 @@ export default function MyRow(props) {
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
     >
       <TableCell component="th" scope="row">
-      <FileFolder rowId={props.id} fileChange={props.fileChange} inf={props.inf}/>;
+        <FileFolder rowId={props.id} fileChange={props.fileChange} />;
       </TableCell>
 
       {props.loading ? (
@@ -40,7 +41,7 @@ export default function MyRow(props) {
               list={props.ds}
               rowId={props.id}
             />
-          </TableCell>
+          </TableCell>s
         </>
       )}
       <TableCell component="th" scope="row">

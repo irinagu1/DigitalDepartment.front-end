@@ -13,6 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import Typography from "@mui/material/Typography";
 import MyToolbar from "./myToolbar";
+import {useScrollTrigger} from '@mui/material';
 import MyPhoneToolbar from "./myPhoneToolbar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
@@ -30,6 +31,22 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: "8px 12px",
 }));
 
+function HideOnScroll(props) {
+  const { children } = props;
+  const trigger = useScrollTrigger();
+
+  return (
+    <div>
+      {React.cloneElement(children, {
+        style: {
+          transition: "transform 0.3s ease-in-out",
+          transform: trigger ? "translateY(-100%)" : "translateY(0)",
+        },
+      })}
+    </div>
+  );
+}
+
 export default function Header(props) {
   const mode = "light";
   const defaultTheme = createTheme({ palette: { mode } });
@@ -46,112 +63,74 @@ export default function Header(props) {
 
   return (
     <>
-          <ThemeProvider theme={defaultTheme}>
-      <AppBar
-        position="fixed"
-        sx={{
-          boxShadow: 0,
-          bgcolor: "transparent",
-          backgroundImage: "none",
-          mt: 1,
-        }}
-      >
-        <Container maxWidth="lg">
-          <StyledToolbar variant="dense" disableGutters>
-            <Typography
-              sx={{
-                mr: "auto",
-                color: "black",
-                textDecoration: "none",
-              }}
-            >
-              АИС "Цифровая кафедра"
-            </Typography>
-            <Box
-              sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
-            >
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <Button variant="text" color="info" size="small">
-                  Главная
-                </Button>
-                {localStorage.getItem("permissions") ? <MyToolbar /> : null}
-              </Box>
-            </Box>
-
-            <Box
-              sx={{
-                display: { xs: "none", md: "flex" },
-                gap: 1,
-                alignItems: "center",
-              }}
-            >
-              <Button
-                color="primary"
-                variant="text"
-                size="small"
-                onClick={logout}
-              >
-                Выйти
-              </Button>
-            </Box>
-
-            <Box sx={{ display: { sm: "flex", md: "none" } }}>
-              <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
-                <MenuIcon />
-              </IconButton>
-
-              <Drawer anchor="top" open={open} onClose={toggleDrawer(false)}>
-                <Box sx={{ p: 2, backgroundColor: "background.default" }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <IconButton onClick={toggleDrawer(false)}>
-                        <CloseRoundedIcon />
-                      </IconButton>
-                    </Box>
-                    <Typography
-                      sx={{
-                        mr: "auto",
-                        color: "black",
-                        textDecoration: "none",
-                      }}
-                    >
-                      АИС "Цифровая кафедра"
-                    </Typography>
-                  </Box>
-                  <Divider sx={{ my: 3 }} />
-
-                  <MenuItem>Главная</MenuItem>
-                  {localStorage.getItem("permissions") ? (
-                    <MyPhoneToolbar />
-                  ) : null}
-                  <MenuItem>
-                    <Button
-                      color="primary"
-                      variant="outlined"
-                      fullWidth
-                      onClick={logout}
-                    >
-                      Выйти
-                    </Button>
-                  </MenuItem>
+      <ThemeProvider theme={defaultTheme}>
+        <HideOnScroll>
+          <AppBar position="fixed" sx={{ bgcolor: 'AliceBlue', boxShadow: "none" }}>
+            <Container maxWidth="lg">
+              <Toolbar variant="dense" disableGutters>
+                <Typography sx={{ flexGrow: 1, color: "black" }}>
+                  АИС "Цифровая кафедра"
+                </Typography>
+                <Box
+                  sx={{
+                    display: { xs: "none", md: "flex" },
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  <Button variant="text" color="info" size="small">
+                    Главная
+                  </Button>
+                  {localStorage.getItem("permissions") ? <MyToolbar /> : null}
                 </Box>
-              </Drawer>
-            </Box>
-          </StyledToolbar>
-        </Container>
-      </AppBar>
-      {props.children}
+
+                <Box>
+                  <Button
+                    color="primary"
+                    variant="text"
+                    size="small"
+                    onClick={logout}
+                  >
+                    Выйти
+                  </Button>
+                </Box>
+
+                <Box sx={{ display: { sm: "flex", md: "none" } }}>
+                  <IconButton
+                    aria-label="Menu button"
+                    onClick={toggleDrawer(true)}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+
+                  <Drawer anchor="top" open={open} onClose={toggleDrawer(false)}>
+                    <Box sx={{ p: 2, backgroundColor: 'background.default' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <IconButton onClick={toggleDrawer(false)}>
+                          <CloseRoundedIcon />
+                        </IconButton>
+                        <Typography sx={{ color: 'black' }}>
+                          АИС "Цифровая кафедра"
+                        </Typography>
+                      </Box>
+                      <Divider sx={{ my: 2 }} />
+                      <MenuItem onClick={toggleDrawer(false)}>Главная</MenuItem>
+                      {localStorage.getItem('permissions') ? <MyPhoneToolbar /> : null}
+                      <MenuItem>
+                        <Button color="primary" variant="outlined" fullWidth onClick={logout}>
+                          Выйти
+                        </Button>
+                      </MenuItem>
+                    </Box>
+                  </Drawer>
+                </Box>
+              </Toolbar>
+            </Container>
+          </AppBar>
+        </HideOnScroll>
+        <Box sx={{ marginTop: '64px' }}>
+        {props.children}
+        </Box>
       </ThemeProvider>
     </>
   );

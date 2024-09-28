@@ -67,7 +67,7 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (loginError || passwordError) throw "vvedite barahlo";
+    if (loginError || passwordError) throw "vvedite info";
 
     const inputsValues = new FormData(event.currentTarget);
     const userCredentials = {
@@ -114,7 +114,7 @@ export default function SignIn() {
 
   function getPermissions(){
 
-    fetch(baseurl + "users",{
+    fetch(baseurl + "users/permissions",{
       headers:{
         'Content-type':'application/json',
         Authorization: 'Bearer ' + localStorage.getItem('accessToken'),

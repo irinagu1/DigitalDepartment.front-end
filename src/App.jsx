@@ -10,6 +10,9 @@ import Main from "./pages/Main/Main";
 import DocumentCategories from "./pages/DocumentCategories";
 import SendMessage from "./pages/SendMessage";
 import AllDocuments from "./pages/AllDocuments";
+import AllRoles from "./pages/Roles/AllRoles";
+import AddRole from "./pages/Roles/AddRole";
+import UpdateRole from "./pages/Roles/UpdateRole";
 
 
 export const LoginContext = createContext();
@@ -39,6 +42,9 @@ function App() {
           <Route path="/documentstatuses" element={<DocumentStatuses/> } />
           <Route path="/documentcategories" element={<DocumentCategories/> } />
           <Route path="/alldocuments" element={<AllDocuments/> } />
+          <Route path="/roles" element={<AllRoles/> } />
+          <Route path="/roles/add" element={<AddRole/> } />
+          <Route path="/roles/update" element={<UpdateRole/> } />
         </Routes>
         </Header>
 

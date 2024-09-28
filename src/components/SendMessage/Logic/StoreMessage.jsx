@@ -22,7 +22,7 @@ export default function storeMessage(props) {
       if (!res.ok) throw res.status;
       const data = await res.json();
       letterId = data;
-    //  addFiles(data);
+     addFiles(data);
       console.log(props);
       storeRecipients(props.recipients, props.asRecipients, props.recipientsToCheck, data);
       console.log("letter id: ");

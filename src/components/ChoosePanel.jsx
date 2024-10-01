@@ -6,6 +6,7 @@ export default function ChoosePanel(props) {
   const [selectedChip, setSelectedChip] = useState(props.chips[0]);
 
   const handleChipClick = (chip) => {
+    console.log(chip);
     setSelectedChip(chip);
     props.changeChip(chip);
   };

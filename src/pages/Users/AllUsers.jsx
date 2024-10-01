@@ -3,9 +3,10 @@ import { baseurl } from "../../shared";
 import RolesTable from "../../components/Roles/RolesTable";
 import { Button, Container } from "@mui/material";
 import ChoosePanel from "../../components/ChoosePanel";
+import UsersTable from "../../components/Users/UsersTable";
 
 const fetchData = async (parameter) => {
-  return fetch(baseurl + "users/GetWithParameters?isActive=" + parameter, {
+  return fetch(baseurl + "users/forshow?isActive=" + parameter, {
     headers: {
       "Content-type": "application/json",
       Authorization: "Bearer " + localStorage.getItem("accessToken"),
@@ -60,12 +61,7 @@ export default function AllUsers() {
       <Container sx={{ mt: "100px", ml: "100px" }}>
         <Button onClick={handleAdd}>Register</Button>
         <ChoosePanel chips={chipsIsActive} changeChip={handleChipChange} />
-        <RolesTable
-          loading={loading}
-          rows={users}
-          chip={activeChip}
-          handleDeactivate={handleDeactivate}
-        />
+        <UsersTable loading={loading} rows={users} chip={activeChip} />
       </Container>
     </>
   );

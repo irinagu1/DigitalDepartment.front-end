@@ -16,13 +16,9 @@ import InputUser from "../../components/Users/InputUser";
 import ChooseRecipients from "../../components/SendMessage/ChooseRecipients";
 import ChooseElement from "../../components/SendMessage/ChooseElement";
 import ChooseRoles from "../../components/Users/ChooseRoles";
-import { useLocation } from "react-router-dom";
-import CheckRoles from "../../components/Users/CheckRoles";
 
-const fetchData = async (param, id) => {
-  const query = id !== null ? "?id=" + id : "";
-  return fetch(baseurl + param + query, {
-    method: "GET",
+const fetchRoles = async () => {
+  return fetch(baseurl + "roles", {
     headers: {
       "Content-type": "application/json",
       Authorization: "Bearer " + localStorage.getItem("accessToken"),
@@ -37,10 +33,7 @@ const fetchData = async (param, id) => {
     });
 };
 
-export default function UpdateUser() {
-  const location = useLocation();
-  const { state } = location;
-
+export default function AddUser() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -52,32 +45,18 @@ export default function UpdateUser() {
     secondName: "",
     lastName: "",
     username: "",
+    password: "",
     Roles: [],
   });
 
   useEffect(() => {
-    fetchUser();
-    // setRolesNames();
+    setRolesNames();
   }, []);
 
-  const fetchUser = async () => {
-    const userDB = await fetchData("users/byid", state.id);
-    const currentUser = {
-      firstName: userDB.firstName,
-      secondName: userDB.secondName,
-      lastName: userDB.lastName,
-      username: userDB.username,
-      Roles: userDB.roles,
-    };
-    setUser(currentUser);
-    const allRoles = await fetchData("roles");
-    const userRoles = await fetchData("roles/user", state.id);
-    const rolesToState = allRoles.map((el) => {
-      if (userRoles.find((r) => r.name == el.name)) {
-        return { name: el.name, checked: true };
-      } else {
-        return { name: el.name, checked: false };
-      }
+  const setRolesNames = async () => {
+    const rolesFromDB = await fetchRoles();
+    const rolesToState = rolesFromDB.map((el) => {
+      return el.name;
     });
     setRoles(rolesToState);
   };
@@ -96,53 +75,54 @@ export default function UpdateUser() {
   const handlePasswordChange = async (newValue) => {
     setUser({ ...user, password: newValue });
   };
-  const handleRolesChange = async (newValue) => {
-    const newRoles = roles.map((el) => {
-      if (el.name == newValue) {
-        return { ...el, checked: !el.checked };
-      } else {
-        return el;
-      }
-    });
-    setRoles(newRoles);
+  const handleRoleshange = async (newValue) => {
+    setUser({ ...user, Roles: newValue });
   };
 
-  const update = async () => {
-    const newRoles = roles.filter((e) => e.checked == true).map((e) => e.name);
+  const register = async () => {
     const newUser = {
       ...user,
       email: user.username + "@mail.ru",
       phoneNumber: "12345",
-      isActive: true,
-      Roles: newRoles
+      isActive: true
     };
 
-    updateUser(newUser);
+    registerUser(newUser);
   };
-  const updateUser = async (newUser) => {
-    //update user first
-    //update his roles second
+  const registerUser = async (newUser) => {
     return fetch(baseurl + "authentication", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify(newUser),
-    }).then((res) => {
-      console.log(res);
-      if (!res.ok) {
+    })
+      .then((res) => {
         console.log(res);
-        setSnackbarMessage("Не удалось создать пользователя. ");
-        setSnackbarSeverity("error");
-      } else {
+        if (!res.ok) {
+          console.log(res);
+          setSnackbarMessage("Не удалось создать пользователя. ");
+          setSnackbarSeverity("error");
+
+        }
+        else{
         setSnackbarMessage("Пользователь создан успешно!");
-        setSnackbarSeverity("success");
-        clear();
-      }
-      setSnackbarOpen(true);
-    });
+         setSnackbarSeverity("success");
+         clear();
+        }
+        setSnackbarOpen(true);
+      });
   };
 
+  const clear = ()=>{
+    setUser({ firstName: "",
+        secondName: "",
+        lastName: "",
+        username: "",
+        password: "",
+        Roles: [],});
+
+  };
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -179,12 +159,12 @@ export default function UpdateUser() {
         handleValueChange={handlePasswordChange}
         labelName="Пароль"
       />
-      <CheckRoles
+      <ChooseRoles
         data={roles}
         loading={loading}
-        updateChecked={handleRolesChange}
+        handleChange={handleRoleshange}
       />
-      <Button onClick={update}>Update</Button>
+      <Button onClick={register}>Register</Button>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

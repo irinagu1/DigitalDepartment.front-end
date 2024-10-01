@@ -13,6 +13,9 @@ import AllDocuments from "./pages/AllDocuments";
 import AllRoles from "./pages/Roles/AllRoles";
 import AddRole from "./pages/Roles/AddRole";
 import UpdateRole from "./pages/Roles/UpdateRole";
+import AllUsers from "./pages/Users/AllUsers";
+import AddUser from "./pages/Users/AddUser";
+import UpdateUser from "./pages/Users/UpdateUser";
 
 
 export const LoginContext = createContext();
@@ -45,6 +48,9 @@ function App() {
           <Route path="/roles" element={<AllRoles/> } />
           <Route path="/roles/add" element={<AddRole/> } />
           <Route path="/roles/update" element={<UpdateRole/> } />
+          <Route path="/users" element={<AllUsers/> } />
+          <Route path="/users/add" element={<AddUser/> } />
+          <Route path="/users/update" element={<UpdateUser/> } />
         </Routes>
         </Header>
 

@@ -58,7 +58,7 @@ export default function TableDocumentCategories(props) {
                           </Button>
                         ) : null}
                         <Button onClick={() => props.hadleEnabling(row)}>
-                          {props.isActive ? 'Активировать' : 'Деактивировать'}
+                          {props.isActive ? 'Деактивировать' : 'Активировать'}
 
                         </Button>
                       </TableCell>

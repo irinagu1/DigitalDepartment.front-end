@@ -4,7 +4,7 @@ import { useState, createContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import SignIn from "./pages/SignIn";
-import DocumentStatuses from "./components/general/DocumentStatuses";
+
 import Header from "./components/general/header/Header";
 import Main from "./pages/Main/Main";
 import DocumentCategories from "./pages/DocumentCategories";
@@ -16,6 +16,7 @@ import UpdateRole from "./pages/Roles/UpdateRole";
 import AllUsers from "./pages/Users/AllUsers";
 import AddUser from "./pages/Users/AddUser";
 import UpdateUser from "./pages/Users/UpdateUser";
+import DocumentStatuses from "./pages/DocumentStatuses";
 
 
 export const LoginContext = createContext();

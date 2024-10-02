@@ -51,7 +51,7 @@ export default function AddDocumentCategoryModal(props) {
         <StyledBox>
           <ModalHeader>
             <Typography variant="h6" component="h2">
-              Новая категория
+              Новый элемент
             </Typography>
           </ModalHeader>
           <ModalBody>
@@ -91,7 +91,7 @@ export default function AddDocumentCategoryModal(props) {
         </StyledBox>
       </StyledModal>
       <Button onClick={props.toggleShow} variant="text" sx={{ width: "30%" }}>
-        Добавить новую категорию
+        Добавить новый элемент
       </Button>
     </>
   );

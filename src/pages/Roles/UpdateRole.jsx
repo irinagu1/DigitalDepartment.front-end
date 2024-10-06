@@ -2,12 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Container,
-  TextField,
   Typography,
-  FormControl,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
   Button,
   Snackbar,
   Alert,
@@ -45,19 +40,18 @@ export default function UpdateRole() {
   const [role, setRole] = useState("");
   const [permissionsForView, setPermissionsForView] = useState([]);
 
-  const [categories, setCategories] = useState(["all"]);
+  const [categories, setCategories] = useState(["все"]);
   const [pageState, setPageState] = useState({
-    activeCategory: "all",
+    activeCategory: "все",
     activePermissions: [],
   });
 
   useEffect(() => {
     fetchCategories();
     fetchRole();
-    /* fetchOriginalPermissions();
-    fetchAllPermissions();*/
     setPerms();
   }, []);
+
 
   const fetchRole = async () => {
     const roleFromDb = await fetchData("roles/GetById", "?roleId=" + state.id);
@@ -66,7 +60,8 @@ export default function UpdateRole() {
   };
   const fetchCategories = async () => {
     const categoriesFromDB = await fetchData("permissions/categories");
-    setCategories(categories.concat(categoriesFromDB));
+    const allC = ["все"].concat(categoriesFromDB);
+    setCategories(allC);
   };
 
   const setPerms = async () => {
@@ -84,7 +79,7 @@ export default function UpdateRole() {
     });
     setPermissionsForView(permsForView);
     setPageState({
-      activeCategory: "all",
+      activeCategory: "все",
       activePermissions: permsForView,
     });
   };
@@ -99,7 +94,7 @@ export default function UpdateRole() {
   };
 
   const handleCategoryChange = (value) => {
-    if (value === "all") {
+    if (value === "все") {
       setPageState({
         activeCategory: value,
         activePermissions: permissionsForView,
@@ -121,7 +116,7 @@ export default function UpdateRole() {
         return { ...el, checked: !el.checked };
       } else {
         return el;
-      }
+      } 
     });
     setPermissionsForView(allPermissions);
     const activePermissions = pageState.activePermissions.map((el) => {
@@ -184,8 +179,18 @@ export default function UpdateRole() {
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Update Role
+        Редактировать роль
       </Typography>
+      <Button
+      sx={{mb:2, mr:3}}
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          handleSubmit();
+        }}
+      >
+        Обновить
+      </Button>
       <InputName
         roleName={role.name}
         handleRoleNameChange={handleRoleNameChange}
@@ -199,15 +204,7 @@ export default function UpdateRole() {
         permissions={pageState.activePermissions}
         handlePermissionChange={handlePermissionChange}
       />
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => {
-          handleSubmit();
-        }}
-      >
-        Update
-      </Button>
+    
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

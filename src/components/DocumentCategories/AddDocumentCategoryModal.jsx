@@ -63,7 +63,7 @@ export default function AddDocumentCategoryModal(props) {
                 id="name"
                 type="text"
                 value={name}
-                placeholder="Протокол..."
+                placeholder="Имя..."
                 onChange={(e) => {
                   setName(e.target.value);
                 }}

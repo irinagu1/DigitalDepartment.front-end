@@ -21,8 +21,8 @@ const handleChange = (event) => {
     <>
       {!props.loading ? (
          <Box sx={{ display: 'flex' }}>
-         <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-           <FormLabel component="legend">Assign responsibility</FormLabel>
+         <FormControl sx={{ mb:2 }} component="fieldset" variant="standard">
+           <FormLabel component="legend">Роли:</FormLabel>
            <FormGroup>
             {props.data.map(el=> <FormControlLabel
             control={

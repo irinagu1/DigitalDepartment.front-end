@@ -34,7 +34,7 @@ export default function PermissionsList(props) {
   };
   return (
     <FormControl component="fieldset" sx={{ mb: 4 }}>
-      <Typography variant="h6">Select Permissions</Typography>
+      <Typography variant="h6">Выберите возможности для роли:</Typography>
       <FormGroup>
         {props.permissions.map((permission) => (
           <FormControlLabel

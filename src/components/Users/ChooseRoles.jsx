@@ -43,7 +43,7 @@ export default function ChooseRoles(props) {
           }}
           style={{ width: 500 }}
           renderInput={(params) => (
-            <TextField {...params} label="Checkboxes" placeholder="Favorites" />
+            <TextField {...params} label="Роли" placeholder="Роли" />
           )}
           onChange={(event, value) => {
             handleChange(value);

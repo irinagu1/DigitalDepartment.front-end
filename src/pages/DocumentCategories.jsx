@@ -13,6 +13,7 @@ import Modal from "@mui/material/Modal";
 import { LoginContext } from "../App";
 import { styled } from "@mui/system";
 import ChoosePanel from "../components/ChoosePanel";
+import StyledContainer from "../components/StyledContainer";
 
 const fetchData = async (parameter) => {
   return fetch(baseurl + "documentCategories?isEnable=" + parameter, {
@@ -29,18 +30,6 @@ const fetchData = async (parameter) => {
       return data;
     });
 };
-
-const StyledContainer = styled(Container)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: 8,
-  position: "relative",
-  backgroundColor: "transparent", // Make the center transparent
-  border: `2px solid ${theme.palette.grey[300]}`, // Border color
-  borderRadius: "8px",
-  padding: theme.spacing(3),
-  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-}));
 
 const chipsIsActive = ["Активные", "Архив"];
 
@@ -145,11 +134,9 @@ export default function DocumentCategories() {
   return (
     <>
       <StyledContainer>
-        <div>
-          <Typography variant="h3" gutterBottom>
+      <Typography variant="h4" gutterBottom>
             Категории документов
           </Typography>
-        </div>
         <AddDocumentCategoryModal
           newDocCategory={newDocCategory}
           show={show}

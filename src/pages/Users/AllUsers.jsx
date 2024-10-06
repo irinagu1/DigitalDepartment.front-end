@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
 import { baseurl } from "../../shared";
 import RolesTable from "../../components/Roles/RolesTable";
-import { Button, Container } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Container,
+  Snackbar,
+  Stack,
+  Typography,
+} from "@mui/material";
 import ChoosePanel from "../../components/ChoosePanel";
 import UsersTable from "../../components/Users/UsersTable";
+import StyledContainer from "../../components/StyledContainer";
+import { useNavigate } from "react-router-dom";
 
 const fetchData = async (parameter) => {
   return fetch(baseurl + "users/forshow?isActive=" + parameter, {
@@ -22,7 +31,14 @@ const fetchData = async (parameter) => {
 };
 
 const chipsIsActive = ["Активные", "Архив"];
+
 export default function AllUsers() {
+  const navigate = useNavigate();
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
   const [activeChip, setActiveChip] = useState(chipsIsActive[0]);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
@@ -48,7 +64,7 @@ export default function AllUsers() {
     setUsers(usersFromDB);
   };
   const handleAdd = async () => {
-    console.log(add);
+    navigate("/users/add");
   };
 
   const handleChipChange = (newChip) => {
@@ -56,13 +72,84 @@ export default function AllUsers() {
     setIsActive(!isActive);
     console.log(newChip);
   };
+  const handleDeactivate = (id) => {
+    deactivateUser(id);
+  };
+ 
+
+  const deactivateUser = async (userId) => {
+    const path = baseurl + "users/toArchive?userId=" + userId;
+    return fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          console.log(res);
+          setSnackbarMessage("Не удалось выполнить действие. ");
+          setSnackbarSeverity("error");
+        } else {
+          const newList = users.filter((el) => el.id !== userId);
+          setUsers(newList);
+          setSnackbarMessage("Успешно!");
+          setSnackbarSeverity("success");
+        }
+        setSnackbarOpen(true);
+        return res.json();
+      })
+      .then((data) => {
+        return data;
+      });
+  };
+  const handleClose = () => setOpen(false);
+  const handleCloseSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
   return (
     <>
-      <Container sx={{ mt: "100px", ml: "100px" }}>
-        <Button onClick={handleAdd}>Register</Button>
-        <ChoosePanel chips={chipsIsActive} changeChip={handleChipChange} />
-        <UsersTable loading={loading} rows={users} chip={activeChip} />
-      </Container>
+      <StyledContainer>
+        <Typography variant="h4" gutterBottom>
+          Управление пользователями
+        </Typography>
+        <Stack spacing={2}>
+          <Button
+            sx={{ width: "30%", alignSelf: "left" }}
+            variant="outlined"
+            color="primary"
+            onClick={handleAdd}
+          >
+            Добавить нового пользователя
+          </Button>
+          <ChoosePanel chips={chipsIsActive} changeChip={handleChipChange} />
+          <UsersTable
+            loading={loading}
+            rows={users}
+            chip={activeChip}
+            handleDeactivate={handleDeactivate}
+            isActive={isActive}
+          />
+        </Stack>
+      </StyledContainer>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackBar}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

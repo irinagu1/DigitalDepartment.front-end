@@ -146,7 +146,7 @@ export default function DocumentStatuses() {
     <>
       <StyledContainer>
         <div>
-          <Typography variant="h3" gutterBottom>
+    <Typography variant="h4" gutterBottom>
             Статусы документов
           </Typography>
         </div>

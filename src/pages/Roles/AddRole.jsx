@@ -39,17 +39,18 @@ export default function AddRole() {
 
   const [loading, setLoading] = useState(false);
   const [roleName, setRoleName] = useState("");
-  const [categories, setCategories] = useState(["all"]);
+  const [categories, setCategories] = useState(["все"]);
   const [permissions, setPermissions] = useState([]);
   const [pageState, setPageState] = useState({
-    activeCategory: "all",
+    activeCategory: "все",
     activePermissions: [],
   });
 
   useEffect(() => {
     const fetchCategories = async () => {
       const categoriesFromDB = await fetchData("permissions/categories");
-      setCategories(categories.concat(categoriesFromDB));
+        const allC = ["все"].concat(categoriesFromDB);
+      setCategories(categories.concat(allC));
     };
 
     const fetchPermissions = async () => {
@@ -58,7 +59,7 @@ export default function AddRole() {
         return { ...el, checked: false };
       });
       setPageState({
-        activeCategory: "all",
+        activeCategory: "все",
         activePermissions: permissonswWithChecked,
       });
       setPermissions(permissonswWithChecked);
@@ -79,7 +80,7 @@ export default function AddRole() {
   };
 
   const handleCategoryChange = (value) => {
-    if (value === "all") {
+    if (value === "все") {
       setPageState({
         activeCategory: value,
         activePermissions: permissions,
@@ -124,7 +125,7 @@ export default function AddRole() {
     });
     setPermissions(perms);
     setPageState({
-      activeCategory: "all",
+      activeCategory: "все",
       activePermissions: perms,
     });
   };
@@ -178,8 +179,28 @@ export default function AddRole() {
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Add New Role
+        Добавить новую роль
       </Typography>
+      <Button
+      sx={{mb:2, mr:3}}
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          handleSubmit();
+        }}
+      >
+        Добавить
+      </Button>
+      <Button
+        sx={{mb:2}}
+        variant="outlined"
+        color="primary"
+        onClick={() => {
+          clear();
+        }}
+      >
+        Очистить
+      </Button>
       <InputName
         roleName={roleName}
         handleRoleNameChange={handleRoleNameChange}
@@ -194,29 +215,11 @@ export default function AddRole() {
         handlePermissionChange={handlePermissionChange}
       />
 
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => {
-          clear();
-        }}
-      >
-        Clear
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => {
-          handleSubmit();
-        }}
-      >
-        Add
-      </Button>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} 
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={handleClose}

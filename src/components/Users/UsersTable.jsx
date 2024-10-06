@@ -6,30 +6,35 @@ export default function UsersTable(props) {
   const columns = [
     {
       field: "fullName",
-      headerName: "fullname",
+      headerName: "Полное имя",
       flex: 1,
       editable: false,
+      headerAlign: "center",
+      align: "center",
     },
     {
       field: "actions",
-      headerName: "actions",
+      headerName: "Доступные действия",
       flex: 1,
+      headerAlign: "center",
+      align: "center",
       renderCell: (params) => (
         <ActionsUsers
           params={params}
           handleDeactivate={handleDeactivate}
-          handlePassword={handlePassword}
+    
+          isActive={props.isActive}
+
         />
       ),
     },
   ];
 
+
   const handleDeactivate = (id) => {
     props.handleDeactivate(id);
   };
-  const handlePassword = (id) => {
-    // props.handleDeactivate(id);
-  };
+
   return (
     <>
       {!props.loading ? (

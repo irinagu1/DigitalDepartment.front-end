@@ -66,7 +66,7 @@ export default function UpdateUser() {
       firstName: userDB.firstName,
       secondName: userDB.secondName,
       lastName: userDB.lastName,
-      username: userDB.username,
+      userName: userDB.userName,
       Roles: userDB.roles,
     };
     setUser(currentUser);
@@ -90,12 +90,10 @@ export default function UpdateUser() {
   const handleLastNameChange = async (newValue) => {
     setUser({ ...user, lastName: newValue });
   };
-  const handleLoginNameChange = async (newValue) => {
+  const handleLoginChange = async (newValue) => {
     setUser({ ...user, username: newValue });
   };
-  const handlePasswordChange = async (newValue) => {
-    setUser({ ...user, password: newValue });
-  };
+
   const handleRolesChange = async (newValue) => {
     const newRoles = roles.map((el) => {
       if (el.name == newValue) {
@@ -114,30 +112,38 @@ export default function UpdateUser() {
       email: user.username + "@mail.ru",
       phoneNumber: "12345",
       isActive: true,
-      Roles: newRoles
+      Roles: newRoles,
     };
 
     updateUser(newUser);
   };
-  const updateUser = async (newUser) => {
+  const updateUser = async () => {
+    const rolesNames = roles.filter((r) => r.checked == true).map((r) => r.name);
+    const updates  = {
+      Id: state.id,
+      FirstName: user.firstName,
+      SecondName: user.secondName,
+      LastName: user.lastName,
+      UserName: user.userName,
+      RolesNames: rolesNames,
+    };
     //update user first
     //update his roles second
-    return fetch(baseurl + "authentication", {
-      method: "POST",
+    return fetch(baseurl + "users/update", {
+      method: "PUT",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify(newUser),
+      body: JSON.stringify(updates),
     }).then((res) => {
       console.log(res);
       if (!res.ok) {
         console.log(res);
-        setSnackbarMessage("Не удалось создать пользователя. ");
+        setSnackbarMessage("Не удалось обновить пользователя. ");
         setSnackbarSeverity("error");
       } else {
-        setSnackbarMessage("Пользователь создан успешно!");
+        setSnackbarMessage("Обновление прошло успешно!");
         setSnackbarSeverity("success");
-        clear();
       }
       setSnackbarOpen(true);
     });
@@ -152,8 +158,16 @@ export default function UpdateUser() {
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Add New Role
+        Редактировать пользователя
       </Typography>
+      <Button
+        sx={{ mb: 2 }}
+        variant="contained"
+        color="primary"
+        onClick={update}
+      >
+        Сохранить изменения
+      </Button>
       <InputUser
         value={user.lastName}
         handleValueChange={handleLastNameChange}
@@ -170,21 +184,15 @@ export default function UpdateUser() {
         labelName="Отчество"
       />
       <InputUser
-        value={user.username}
-        handleValueChange={handleLoginNameChange}
+        value={user.userName}
+        handleValueChange={handleLoginChange}
         labelName="Логин"
-      />
-      <InputUser
-        value={user.password}
-        handleValueChange={handlePasswordChange}
-        labelName="Пароль"
       />
       <CheckRoles
         data={roles}
         loading={loading}
         updateChecked={handleRolesChange}
       />
-      <Button onClick={update}>Update</Button>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

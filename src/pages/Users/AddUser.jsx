@@ -84,7 +84,7 @@ export default function AddUser() {
       ...user,
       email: user.username + "@mail.ru",
       phoneNumber: "12345",
-      isActive: true
+      isActive: true,
     };
 
     registerUser(newUser);
@@ -96,32 +96,30 @@ export default function AddUser() {
         "Content-type": "application/json",
       },
       body: JSON.stringify(newUser),
-    })
-      .then((res) => {
+    }).then((res) => {
+      console.log(res);
+      if (!res.ok) {
         console.log(res);
-        if (!res.ok) {
-          console.log(res);
-          setSnackbarMessage("Не удалось создать пользователя. ");
-          setSnackbarSeverity("error");
-
-        }
-        else{
+        setSnackbarMessage("Не удалось создать пользователя. ");
+        setSnackbarSeverity("error");
+      } else {
         setSnackbarMessage("Пользователь создан успешно!");
-         setSnackbarSeverity("success");
-         clear();
-        }
-        setSnackbarOpen(true);
-      });
+        setSnackbarSeverity("success");
+        clear();
+      }
+      setSnackbarOpen(true);
+    });
   };
 
-  const clear = ()=>{
-    setUser({ firstName: "",
-        secondName: "",
-        lastName: "",
-        username: "",
-        password: "",
-        Roles: [],});
-
+  const clear = () => {
+    setUser({
+      firstName: "",
+      secondName: "",
+      lastName: "",
+      username: "",
+      password: "",
+      Roles: [],
+    });
   };
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -132,8 +130,9 @@ export default function AddUser() {
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Add New Role
+        Добавить нового пользователя
       </Typography>
+
       <InputUser
         value={user.lastName}
         handleValueChange={handleLastNameChange}
@@ -159,12 +158,20 @@ export default function AddUser() {
         handleValueChange={handlePasswordChange}
         labelName="Пароль"
       />
+      <Typography sx={{ mb: 2 }}>Выберите роли:</Typography>
       <ChooseRoles
         data={roles}
         loading={loading}
         handleChange={handleRoleshange}
       />
-      <Button onClick={register}>Register</Button>
+      <Button
+        sx={{ mt: 3}}
+        variant="contained"
+        color="primary"
+        onClick={register}
+      >
+        Создать
+      </Button>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

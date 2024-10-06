@@ -6,34 +6,48 @@ export default function RolesTable(props) {
   const columns = [
     {
       field: "name",
-      headerName: "name",
-      flex: 1,
+      headerName: "Название",
+      flex: 0.4,
       editable: false,
+      headerAlign: "center",
+      align: "center",
     },
     {
-      field: "normalizedName",
-      headerName: "normalizedName",
-      flex: 1,
-
+      field: "connectedUsers",
+      headerName: "Количество пользователей",
+      flex: 0.4,
       editable: true,
+      headerAlign: "center",
+      align: "center",
     },
     {
       field: "actions",
-      headerName: "actions",
+      headerName: "Доступные действия",
       flex: 1,
       renderCell: (params) => (
-        <Actions params={params} handleDeactivate={handleDeactivate} />
+        <Actions
+          params={params}
+          isActive={props.isActive}
+          handleDeactivate={handleDeactivate}
+          handleDelete={handleDelete}
+        />
       ),
+      headerAlign: "center",
+      align: "center",
     },
   ];
 
   const handleDeactivate = (id) => {
     props.handleDeactivate(id);
   };
+  const handleDelete = (id) => {
+    props.handleDelete(id);
+  };
   return (
     <>
       {!props.loading ? (
         <DataGrid
+          rowWidth="auto"
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
           rows={props.rows}
           columns={columns}

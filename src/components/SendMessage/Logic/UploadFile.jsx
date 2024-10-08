@@ -1,12 +1,11 @@
 import { baseurl } from "../../../shared";
 import { v4 as uuidv4 } from "uuid";
 
-export default function uploadFile(fileToBeUpload) {
-
+export default async function uploadFile(fileToBeUpload) {
   var todayDate = new Date().toISOString().slice(0, 10);
-  let fileName = todayDate + '_' + fileToBeUpload.name;
- // let fileName = todayDate + '_' + fileToBeUpload.name.substring(0, fileToBeUpload.name.lastIndexOf("."));  
-  console.log(fileName);
+  let fileName = todayDate + "_" + fileToBeUpload.name;
+  // let fileName = todayDate + '_' + fileToBeUpload.name.substring(0, fileToBeUpload.name.lastIndexOf("."));
+
   let chunkSize = 1048576 * 3;
   let counter = 0;
   //let fileToBeUpload ={};
@@ -33,7 +32,10 @@ export default function uploadFile(fileToBeUpload) {
     formData.append("fileName", fileName);
     const response = await fetch(url, {
       method: "POST",
-      headers: {},
+      headers: {
+        "Content-type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      },
       /*  body: JSON.stringify({
         data: formData,
         fileName: fileGuid,
@@ -47,7 +49,6 @@ export default function uploadFile(fileToBeUpload) {
   };
 
   const uploadChunk = async (chunk) => {
-    console.log(chunk[0]);
     const url =
       baseurl +
       "documents/UploadChunks?id=" +
@@ -58,7 +59,10 @@ export default function uploadFile(fileToBeUpload) {
       //  debugger;
       const response = await fetch(url, {
         method: "POST",
-        //   headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        },
         body: chunk,
       });
 
@@ -73,33 +77,37 @@ export default function uploadFile(fileToBeUpload) {
       } else {
         var percentage = (counter / chunkCount) * 100;
       }
+      return "ok";
     } catch (error) {
-      debugger;
+      //debugger;
       console.log("error", error);
+      return "error";
     }
   };
   const getFileContext = () => {
     const _file = fileToBeUpload;
-     fileSize = _file.size;
+    fileSize = _file.size;
     const _totalCount =
       _file.size % chunkSize == 0
         ? _file.size / chunkSize
         : Math.floor(_file.size / chunkSize) + 1; // Total count of chunks will have been upload to finish the file
     chunkCount = _totalCount;
 
-   // const _fileID = uuidv4() + "." + _file.name.split(".").pop();
+    // const _fileID = uuidv4() + "." + _file.name.split(".").pop();
     //fileGuid =  _fileID;
   };
 
-  const fileUpload = () => {
+  const fileUpload = async () => {
     getFileContext();
+
     counter = counter + 1;
     if (counter <= chunkCount) {
       var chunk = fileToBeUpload.slice(beginingOfTheChunk, endOfTheChunk);
-      uploadChunk(chunk);
+      const partRes = await uploadChunk(chunk);
+      if (partRes !== "ok") return "error";
     }
 
-
+    return "ok";
   };
 
   const resetChunkProperties = () => {
@@ -109,6 +117,7 @@ export default function uploadFile(fileToBeUpload) {
     endOfTheChunk = chunkSize;
   };
 
-  fileUpload();
-  return fileName;
+  const res = await fileUpload();
+  if (res !== "ok") return "error";
+  else return fileName;
 }

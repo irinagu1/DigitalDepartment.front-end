@@ -14,10 +14,10 @@ export default function TableFiles(props) {
       <Table id="mytable" sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Файл</TableCell>
-            <TableCell align="right">Категория</TableCell>
-            <TableCell align="right">Статус</TableCell>
-            <TableCell align="right"></TableCell>
+            <TableCell align="center">Файл</TableCell>
+            <TableCell align="center">Категория</TableCell>
+            <TableCell align="center">Статус</TableCell>
+            <TableCell align="center">Действия</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

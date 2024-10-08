@@ -1,30 +1,47 @@
 import Button from "@mui/material/Button";
-
+import { useNavigate } from "react-router-dom";
 
 export default function MyToolbar() {
+  const navigate = useNavigate();
   return (
     <>
-      {localStorage.getItem("permissions").includes("Create") ? (
-
+      {localStorage
+        .getItem("permissions")
+        .includes("Просмотр пользователей") ? (
         <Button
-          variant="text" color="info" size="small"
+          variant="text"
+          color="info"
+          size="small"
+          onClick={() => {
+            navigate("/alldocuments");
+          }}
         >
           К списку документов
         </Button>
       ) : null}
 
-      {localStorage.getItem("permissions").includes("Read") ? (
+      {localStorage
+        .getItem("permissions")
+        .includes("Просмотр пользователей") ? (
         <Button
-         variant="text" color="info" size="small"
+          variant="text"
+          color="info"
+          size="small"
+          onClick={() => {
+            navigate("/sendmessage");
+          }}
         >
           Загрузить документ
         </Button>
       ) : null}
 
-      {localStorage.getItem("permissions").includes("Update") ? (
-        <Button
-        variant="text" color="info" size="small"
-        >
+      {localStorage
+        .getItem("permissions")
+        .includes("Просмотр пользователей") ? (
+        <Button variant="text" color="info" size="small"
+        onClick={() => {
+          navigate("/main");
+        }}>
           Обо мне
         </Button>
       ) : null}

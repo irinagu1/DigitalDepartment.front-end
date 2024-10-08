@@ -13,9 +13,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import Typography from "@mui/material/Typography";
 import MyToolbar from "./myToolbar";
-import {useScrollTrigger} from '@mui/material';
+import { useScrollTrigger } from "@mui/material";
 import MyPhoneToolbar from "./myPhoneToolbar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../../App";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: "flex",
@@ -48,6 +50,9 @@ function HideOnScroll(props) {
 }
 
 export default function Header(props) {
+  const [logged, setLogged] = React.useContext(LoginContext);
+
+  const navigate = useNavigate();
   const mode = "light";
   const defaultTheme = createTheme({ palette: { mode } });
   const [open, setOpen] = React.useState(false);
@@ -57,15 +62,18 @@ export default function Header(props) {
   };
 
   function logout() {
-    localStorage.clear();
-    navigate("login");
+    setLogged(false);
+    navigate("/login");
   }
 
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
         <HideOnScroll>
-          <AppBar position="fixed" sx={{ bgcolor: 'AliceBlue', boxShadow: "none" }}>
+          <AppBar
+            position="fixed"
+            sx={{ bgcolor: "AliceBlue", boxShadow: "none" }}
+          >
             <Container maxWidth="lg">
               <Toolbar variant="dense" disableGutters>
                 <Typography sx={{ flexGrow: 1, color: "black" }}>
@@ -78,21 +86,32 @@ export default function Header(props) {
                     gap: 2,
                   }}
                 >
-                  <Button variant="text" color="info" size="small">
-                    Главная
-                  </Button>
-                  {localStorage.getItem("permissions") ? <MyToolbar /> : null}
-                </Box>
-
-                <Box>
-                  <Button
-                    color="primary"
-                    variant="text"
-                    size="small"
-                    onClick={logout}
-                  >
-                    Выйти
-                  </Button>
+                  {logged ? (
+                    <>
+                      {" "}
+                      <Button
+                        variant="text"
+                        color="info"
+                        size="small"
+                        onClick={() => {
+                          navigate("/main");
+                        }}
+                      >
+                        Главная
+                      </Button>
+                      {localStorage.getItem("permissions") ? (
+                        <MyToolbar />
+                      ) : null}
+                      <Button
+                        color="primary"
+                        variant="text"
+                        size="small"
+                        onClick={logout}
+                      >
+                        Выйти
+                      </Button>
+                    </>
+                  ) : null}
                 </Box>
 
                 <Box sx={{ display: { sm: "flex", md: "none" } }}>
@@ -103,24 +122,52 @@ export default function Header(props) {
                     <MenuIcon />
                   </IconButton>
 
-                  <Drawer anchor="top" open={open} onClose={toggleDrawer(false)}>
-                    <Box sx={{ p: 2, backgroundColor: 'background.default' }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Drawer
+                    anchor="top"
+                    open={open}
+                    onClose={toggleDrawer(false)}
+                  >
+                    <Box sx={{ p: 2, backgroundColor: "background.default" }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
                         <IconButton onClick={toggleDrawer(false)}>
                           <CloseRoundedIcon />
                         </IconButton>
-                        <Typography sx={{ color: 'black' }}>
+                        <Typography sx={{ color: "black" }}>
                           АИС "Цифровая кафедра"
                         </Typography>
                       </Box>
                       <Divider sx={{ my: 2 }} />
-                      <MenuItem onClick={toggleDrawer(false)}>Главная</MenuItem>
-                      {localStorage.getItem('permissions') ? <MyPhoneToolbar /> : null}
-                      <MenuItem>
-                        <Button color="primary" variant="outlined" fullWidth onClick={logout}>
-                          Выйти
-                        </Button>
-                      </MenuItem>
+                      {logged ? (
+                        <>
+                          {" "}
+                          <MenuItem
+                            onClick={() => {
+                              navigate("/main");
+                            }}
+                          >
+                            Главная
+                          </MenuItem>
+                          {localStorage.getItem("permissions") ? (
+                            <MyPhoneToolbar />
+                          ) : null}
+                          <MenuItem>
+                            <Button
+                              color="primary"
+                              variant="outlined"
+                              fullWidth
+                              onClick={logout}
+                            >
+                              Выйти
+                            </Button>
+                          </MenuItem>
+                        </>
+                      ) : null}
                     </Box>
                   </Drawer>
                 </Box>
@@ -128,9 +175,7 @@ export default function Header(props) {
             </Container>
           </AppBar>
         </HideOnScroll>
-        <Box sx={{ marginTop: '64px' }}>
-        {props.children}
-        </Box>
+        <Box sx={{ marginTop: "64px" }}>{props.children}</Box>
       </ThemeProvider>
     </>
   );

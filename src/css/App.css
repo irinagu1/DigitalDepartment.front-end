@@ -1,0 +1,24 @@
+.custom-file-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.custom-file-upload:hover {
+    background-color: #0056b3;
+}
+
+.custom-file-upload input[type="file"] {
+    display: none; /* Hides the default file input */
+}
+
+.fileName {
+    margin-left: 10px;
+    font-weight: normal;
+}

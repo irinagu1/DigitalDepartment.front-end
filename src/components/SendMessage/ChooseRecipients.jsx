@@ -2,6 +2,7 @@ import { useEffect, useReducer, useState } from "react";
 import { baseurl } from "../../shared";
 import ChooseElement from "./ChooseElement";
 import { PropaneSharp } from "@mui/icons-material";
+import { Typography } from "@mui/material";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -26,16 +27,18 @@ export default function ChooseRecipients(props) {
   useEffect(() => {
     fetchInformation();
   }, []);
-  useEffect(()=>{props.recipientsChange(state)}, [state]);
+  useEffect(() => {
+    props.recipientsChange(state);
+  }, [state]);
 
   const fetchInformation = async () => {
     const resultRoles = await fetch(baseurl + "roles");
     const allRoles = await resultRoles.json();
-    const justRoles = allRoles.map((el)=>({id : el.id, name: el.name}))
+    const justRoles = allRoles.map((el) => ({ id: el.id, name: el.name }));
 
     const resultUsers = await fetch(baseurl + "users");
     const allUsers = await resultUsers.json();
-    const justUsers=allUsers.map((el)=>({id : el.id, name: el.userName }))
+    const justUsers = allUsers.map((el) => ({ id: el.id, name: el.userName }));
 
     setRoles(justRoles);
     setUsers(justUsers);
@@ -51,12 +54,16 @@ export default function ChooseRecipients(props) {
   }
   return (
     <>
+      <Typography>Роли:</Typography>
       <ChooseElement
+        content="Роль"
         data={roles}
         loading={loading}
         handleChange={changeRoles}
       ></ChooseElement>
+      <Typography> Отдельные пользователи:</Typography>
       <ChooseElement
+        content="Пользователь"
         data={users}
         loading={loading}
         handleChange={changeUsers}

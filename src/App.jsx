@@ -8,7 +8,7 @@ import SignIn from "./pages/SignIn";
 import Header from "./components/general/header/Header";
 import Main from "./pages/Main/Main";
 import DocumentCategories from "./pages/DocumentCategories";
-import SendMessage from "./pages/SendMessage";
+import SendMessage from "./pages/SendMessage/SendMessage";
 import AllDocuments from "./pages/AllDocuments";
 import AllRoles from "./pages/Roles/AllRoles";
 import AddRole from "./pages/Roles/AddRole";

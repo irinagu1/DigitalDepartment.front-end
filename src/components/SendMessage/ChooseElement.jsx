@@ -5,6 +5,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { useEffect, useState } from "react";
 import { baseurl } from "../../shared";
+import { useMediaQuery } from "@mui/material";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -17,8 +18,7 @@ const users = [
 
 export default function ChooseElement(props) {
   const [data, setData] = useState(props.data);
-  console.log(props.data);
-
+  const isMobile = useMediaQuery('(max-width:600px)');
   function handleChange(value) {
     props.handleChange(value);
   }
@@ -31,6 +31,8 @@ export default function ChooseElement(props) {
           id="checkboxes-users"
           options={props.data}
           disableCloseOnSelect
+    
+
           getOptionLabel={(option) => option.name}
           renderOption={(props, option, { selected }) => {
             const { key, ...optionProps } = props;
@@ -46,9 +48,9 @@ export default function ChooseElement(props) {
               </li>
             );
           }}
-          style={{ width: 500 }}
+        
           renderInput={(params) => (
-            <TextField {...params} label="Checkboxes" placeholder="Favorites" />
+            <TextField {...params} label={props.content} placeholder={props.content} />
           )}
           onChange={(event, value) => {
             handleChange(value);

@@ -3,81 +3,106 @@ import { baseurl } from "../../../shared";
 import uploadFile from "./UploadFile";
 import storeRecipients from "./StoreRecipients";
 
-
-export default function storeMessage(props) {
+export default async function storeMessage(props) {
+  let isError = false;
   let letterId;
-  let documentsIds = [];
 
-  const createLetter = async ()=> {
-    const newLetter = {
-      AuthorId: "9f8f4248-953c-409b-a048-ac08324f19fe",
-    };
-
-    const fetchNewMessageId = async () => {
-      const res = await fetch(baseurl + "letters", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newLetter),
-      });
-      if (!res.ok) throw res.status;
-      const data = await res.json();
-      letterId = data;
-     addFiles(data);
-      console.log(props);
-      storeRecipients(props.recipients, props.asRecipients, props.recipientsToCheck, data);
-      console.log("letter id: ");
-      console.log(data);
-    };
-
-    fetchNewMessageId();
-  }
-
-  const createDocument = async (obj) => {
-    const res = await fetch(baseurl + "documents/CreateDocument", {
+  const createLetter = async () => {
+    await fetchNewMessageId();
+    if (isError) return "error";
+    else return "ok";
+  };
+  const fetchNewMessageId = async () => {
+    const newLetter = {};
+    //create letter entity
+    const res = await fetch(baseurl + "letters", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(obj),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      },
+      body: JSON.stringify(newLetter),
     });
-    if (!res.ok) throw res.status;
+    if (!res.ok) {
+      isError = true;
+      return;
+    }
     const data = await res.json();
-    console.log("document id: ");
-    console.log(data);
-  }
+    //set created letter id
+    letterId = data;
+    console.log("created letter entity");
 
-  createLetter();
- // addFiles();
-  function addFiles(info){
-  props.allFiles.forEach((item)=>{
-    let fileNameForDb = uploadFile(item.file);
-
-    const documentDb = {
-      Name : fileNameForDb,
-      DocumentStatusid: item.docS,
-      DocumentCategoryId: item.docC,
-      LetterId: info,
-      isArchived: false
+    //add documents entities and upload
+    await addFiles(letterId);
+    if (isError) {
+      return;
+    }
+    //store recipients
+    const resAddR = await storeRecipients(
+      props.recipients,
+      props.asRecipients,
+      props.recipientsToCheck,
+      letterId
+    );
+    if (resAddR !== "ok") {
+      isError = true;
+      return;
     }
 
-    console.log('finished uploading file');
-    createDocument(documentDb);
+    if (isError) {
+      return "error";
+    }
+    return "ok";
+  };
 
-  });
-}
+  //add documents entities and upload
+  const addFiles = async (info) => {
+    var todayDate = new Date().toISOString().slice(0, 10);
+    props.allFiles.forEach(async (item) => {
+      let fn =  todayDate + "_" + item.file.name;
+      const documentDb = {
+        Name: fn,
+        DocumentStatusid: item.docS,
+        DocumentCategoryId: item.docC,
+        LetterId: info,
+        isArchived: false,
+      };
+      let res = await createDocument(documentDb);
+      if (res !== "ok") {
+        isError = true;
+        return "error";
+      }
+      //upload file
+    
+      let fileNameForDb = await uploadFile(item.file);
+      if (fileNameForDb == "error") {
+        isError = true;
+        return "error";
+      }
+    
+      //create doc entity
+     
+    });
+ 
+  };
 
+  const createDocument = async (obj) => {
+    await fetch(baseurl + "documents/CreateDocument", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      },
+      body: JSON.stringify(obj),
+    }).then((res) => {
+      if (!res.ok) {
+        isError = true;
+        return "error";
+      } else return "ok";
+    });
+  };
 
-
- console.log(props.allFiles);
-
-
-
-  //add letter and get letter id
-
-  //add documets as loop and get the mass of ids
-
-  //add recipients
-
-  console.log("in func");
-  console.log(props);
-
-  return "ok";
+  await createLetter();
+  if (isError) return "error";
+  else return "ok";
 }

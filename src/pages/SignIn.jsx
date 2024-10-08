@@ -51,6 +51,8 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn() {
+  const navigate = useNavigate();
+
   const mode = "light";
   const defaultTheme = createTheme({ palette: { mode } });
 
@@ -62,7 +64,6 @@ export default function SignIn() {
 
   const url = baseurl + "authentication/login";
   const [loggedIn, setLoggedIn] = React.useContext(LoginContext);
-  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -103,31 +104,32 @@ export default function SignIn() {
         /*  navigate(location?.state?.previousUrl ?
           location.state.previousUrl : '/doccategories'
        );*/
-        
-     //   navigate("/documentstatuses");
+
+        //   navigate("/documentstatuses");
         console.log(localStorage);
+  
       })
       .catch((e) => {
         console.log(e);
       });
   };
 
-  function getPermissions(){
-
-    fetch(baseurl + "users/permissions",{
-      headers:{
-        'Content-type':'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-      }
-    } )
-    .then((res) => {
-      return res.json();
+  function getPermissions() {
+    fetch(baseurl + "users/permissions", {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      },
     })
-    .then((data) => {
-      localStorage.setItem('permissions', data);
-      console.log("perms");
-      console.log(data);
-    });
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        localStorage.setItem("permissions", data);
+        console.log("perms");
+        console.log(data);
+        navigate("/main");
+      });
   }
   const validateInputs = () => {
     const login = document.getElementById("login");
@@ -155,19 +157,18 @@ export default function SignIn() {
 
     return isValid;
   };
-  function getF(){
- fetch(baseurl + "users")
-          .then((res) => {
-            return res.json();
-          })
-          .then((data) => {
-            console.log("perms");
-            console.log(data);
-          });
+  function getF() {
+    fetch(baseurl + "users")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log("perms");
+        console.log(data);
+      });
   }
   return (
     <ThemeProvider theme={defaultTheme}>
-    
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
@@ -177,6 +178,7 @@ export default function SignIn() {
           <Typography
             component="h5"
             variant="h5"
+            align="center"
             sx={{ width: "100%", fontSize: "clamp(1rem, 10vw, 1.5rem)" }}
           >
             Вход
@@ -250,7 +252,6 @@ export default function SignIn() {
             >
               Войти
             </Button>
-            <Button onClick={getF}>ddd</Button>
           </Box>
         </Card>
       </SignInContainer>

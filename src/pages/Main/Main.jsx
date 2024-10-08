@@ -1,96 +1,132 @@
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MainCard from "./MainCard";
+import { useContext } from "react";
+import { LoginContext } from "../../App";
+import { Navigate } from "react-router-dom";
 
 const permissionsNames = [
   {
-    name: "Create",
+    name: "Просмотр пользователей",
     info: {
       text: "К списку документов",
       description: "Перейти к просмотру хранилища документов",
-      link: "/href",
+      link: "/alldocuments",
     },
   },
   {
-    name: "Read",
+    name: "Просмотр пользователей",
     info: {
       text: "Загрузить документы",
-      description:
-        "Перейти к загрузке документов в систему",
-      link: "/href",
+      description: "Перейти к загрузке документов в систему",
+      link: "/sendmessage",
     },
   },
   {
-    name: "Update",
+    name: "Просмотр пользователей",
     info: {
       text: "Обо мне",
-      description: "Перейти к настройке своего аккаунта",
+      description: "Просмотреть информацию о себе",
       link: "/href",
     },
   },
 ];
-const buttonsDescription = [
+const extraPermissionsNames = [
   {
-    text: "К списку документов",
-    description: "Перейти к просмотру хранилища документов",
-    link: "/href",
+    name: "Просмотр пользователей",
+    info: {
+      text: "Пользователи",
+      description: "Перейти к просмотру пользователей",
+      link: "/users",
+    },
   },
   {
-    text: "Загрузить документы",
-    description:
-      "Перейти к выбору документов и их адресатов с последующим добавлением в систему",
-    link: "/href",
+    name: "Просмотр пользователей",
+    info: {
+      text: "Роли",
+      description: "Перейти к просмотру ролей для пользователей",
+      link: "/roles",
+    },
   },
   {
-    text: "Обо мне",
-    description: "Перейти к настройке своего аккаунта",
-    link: "/href",
+    name: "Просмотр пользователей",
+    info: {
+      text: "Справочник категорий документов",
+      description: "Перейти к просмотру справочника категорий документов",
+      link: "/documentcategories",
+    },
   },
   {
-    text: "Пользователи",
-    description:
-      "Перейти к редактированию аккаунтов существующих пользователей и созданию новых ",
-    link: "/href",
+    name: "Просмотр пользователей",
+    info: {
+      text: "Справочник статусов документов",
+      description: "Перейти к просмотру справочника статусов документов",
+      link: "/documentstatuses",
+    },
   },
   {
-    text: "Категории документов",
-    description:
-      "Перейти к редактированию справочной информации о категориях документов",
-    link: "/href",
-  },
-  {
-    text: "Статусы документов",
-    description:
-      "Перейти к редактированию справочной информации о статусах документов",
-    link: "/href",
-  },
-  {
-    text: "Роли",
-    description: "Перейти к редактированию ролей и разрешений для них",
-    link: "/href",
+    name: "Просмотр пользователей",
+    info: {
+      text: "Архив",
+      description: "Перейти в архив документов",
+      link: "/users",
+    },
   },
 ];
 
 export default function Main() {
-  return (
-    <Stack
-      spacing={2}
-      sx={{
-        alignItems: "center",
-        mt: 15,
-        pb: 10,
-      }}
-    >
+  const [logged, setLogged] = useContext(LoginContext);
 
-      {permissionsNames.map((perm) => {
-        return(  localStorage.getItem("permissions").includes(perm.name) ? <MainCard props={perm.info} /> : null);
-    //    localStorage.getItem("permissions").includes(perm.name) ? (
-      //    return (<MainCard props={perm.info} />);
-       // ) : null;
-      })}
-    </Stack>
+  const usersActions = logged
+    ? permissionsNames
+        .map((perm) => {
+          return localStorage.getItem("permissions").includes(perm.name) ? (
+            <MainCard key={perm.info.text} props={perm.info} />
+          ) : null;
+        })
+        .filter((el) => el !== null)
+    : null;
+
+  const adminActions = logged
+    ? extraPermissionsNames
+        .map((perm) => {
+          return localStorage.getItem("permissions").includes(perm.name) ? (
+            <MainCard key={perm.info.text} props={perm.info} />
+          ) : null;
+        })
+        .filter((el) => el !== null)
+    : null;
+
+  const extraPart = logged ? (
+    adminActions.length !== 0 ? (
+      <>
+        <Typography sx={{ color: "primary.main" }}>
+          Дополнительные возможности:
+        </Typography>
+        {adminActions}
+      </>
+    ) : null
+  ) : null;
+  return (
+    <>
+      {logged ? (
+        <>
+          <Stack
+            spacing={2}
+            sx={{
+              alignItems: "center",
+              mt: 2,
+              pb: 10,
+            }}
+          >
+            <Typography sx={{ color: "primary.main" }}>Меню</Typography>
+            {usersActions}
+            {extraPart}
+          </Stack>
+        </>
+      ) : (
+        <Navigate to="/login" />
+      )}
+    </>
   );
 }

@@ -1,19 +1,34 @@
 import TableFiles from "./TableFiles";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { baseurl } from "../../shared";
 import MyRow from "./MyRow";
-import { Button } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Container,
+  Divider,
+  FormControlLabel,
+  Paper,
+  Snackbar,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import { useReducer } from "react";
 import ChooseRecipients from "./ChooseRecipients";
 import Checkbox from "@mui/material/Checkbox";
 import storeMessage from "./Logic/StoreMessage";
-import SendMessage from "../../pages/SendMessage";
+import { StarTwoTone, ThreeKOutlined } from "@mui/icons-material";
+import { LoginContext } from "../../App";
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case "addInput": {
+      return { ...state, inputsFiles: [...state.inputsFiles, action.newInput] };
+    }
     case "addFile": {
-      return {...state, allFiles: [...state.allFiles, action.newFile] };
+      return { ...state, allFiles: [...state.allFiles, action.newFile] };
     }
     case "changeFile": {
       const oldFile = state.allFiles.find((el) => el.id == action.fileId);
@@ -47,19 +62,32 @@ const reducer = (state, action) => {
       console.log(action.newRecipients);
       return { ...state, recipients: action.newRecipients };
     }
-    case "changeRecipientsToCheck":
-      {
-        console.log("in change recipientsToCheck");
-        console.log(action.newRecipientsToCheck);
-        return { ...state, recipientsToCheck: action.newRecipientsToCheck };
+    case "changeRecipientsToCheck": {
+      console.log("in change recipientsToCheck");
+      console.log(action.newRecipientsToCheck);
+      return { ...state, recipientsToCheck: action.newRecipientsToCheck };
+    }
+    case "deleteFile": {
+      const newFiles = state.allFiles.filter((el) => el.id !== action.fileId);
+      const newInputs = state.inputsFiles.filter(
+        (el) => el.props.id !== action.fileId
+      );
+
+      return { ...state, allFiles: newFiles, inputsFiles: newInputs };
+    }
+    case "changeAsRecipients": {
+      if (action.checked) {
+        return {
+          ...state,
+          recipientsToCheck: state.recipients,
+          asRecipients: true,
+        };
       }
-      case "changeAsRecipients":
+      return { ...state, recipientsToCheck: [], asRecipients: false };
+    }
+    case "clear":
       {
-        if(action.checked){
-    
-          return{...state, recipientsToCheck : state.recipients, asRecipients: true};
-        }
-        return {...state, recipientsToCheck: [], asRecipients: false}
+        return { ...state, inputsFiles: [], allFiles: [] };
       }
       defalut: {
         return state;
@@ -68,17 +96,25 @@ const reducer = (state, action) => {
 };
 
 export default function MainForm(props) {
+  const logged = useContext(LoginContext);
+ 
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
   const [loading, setLoading] = useState(true);
   const [docCategories, setDocCategories] = useState([]);
   const [docStatuses, setDocStatuses] = useState([]);
-  const [inputsFiles, setInputsFiles] = useState([]);
   const [asRecipients, setAsRecipients] = useState(false);
 
   const [state, dispatch] = useReducer(reducer, {
+    inputsFiles: [],
     allFiles: [],
     recipients: [],
     recipientsToCheck: [],
-    asRecipients: false
+    asRecipients: false,
   });
 
   useEffect(() => {
@@ -86,6 +122,7 @@ export default function MainForm(props) {
   }, []);
 
   const fetchDocCat = async () => {
+
     const res = await fetch(baseurl + "documentcategories");
     const data = await res.json();
     const ds = await fetch(baseurl + "documentstatuses");
@@ -97,12 +134,11 @@ export default function MainForm(props) {
 
   function appendFile() {
     const newUuid = uuidv4();
-
     let obj = {
       id: newUuid,
       file: {},
-      docC: "",
-      docS: "",
+      docC: docCategories[0].id.toString(),
+      docS: docStatuses[0].id.toString(),
     };
 
     dispatch({ type: "addFile", newFile: obj });
@@ -116,10 +152,10 @@ export default function MainForm(props) {
         docStatChange={docStatusChange}
         dc={docCategories}
         ds={docStatuses}
+        handleDelete={handleDeleteFile}
       />
     );
-
-    setInputsFiles([...inputsFiles, myRow]);
+    dispatch({ type: "addInput", newInput: myRow });
   }
 
   function fileChange(objId, newFile) {
@@ -144,44 +180,143 @@ export default function MainForm(props) {
   function handleToCheck(checked) {
     setAsRecipients(!asRecipients);
     dispatch({ type: "changeAsRecipients", checked });
-
   }
+
+  function handleDeleteFile(fileId) {
+    dispatch({ type: "deleteFile", fileId });
+  }
+
+  async function handleUpload() {
+    const ifOk = checkState();
+
+    if (ifOk) {
+      const result = await storeMessage(state);
+
+      if (result == "ok") {
+        setSnackbarMessage("Документы добавлены успешно! ");
+        setSnackbarSeverity("success");
+        clear();
+      } else {
+        setSnackbarMessage("Не удалось загрузить данные. ");
+        setSnackbarSeverity("error");
+      }
+    } else {
+      setSnackbarMessage("Заполните необходимые данные. ");
+      setSnackbarSeverity("error");
+    }
+    setSnackbarOpen(true);
+  }
+
+  const clear = () => {
+    dispatch({ type: "clear" });
+  };
+
+  const checkState = () => {
+    let flag = true;
+    if (state.allFiles.length === 0) return false;
+    if (checkRecipients()) return false;
+    state.allFiles.forEach((item) => {
+      if (item.file.name === undefined) {
+        flag = false;
+        return;
+      }
+    });
+
+    return flag;
+  };
+  const checkRecipients = () => {
+    const emptyRec =
+      state.recipients.roles.length === 0 &&
+      state.recipients.users.length === 0;
+    const emptyToCheck =
+      state.recipientsToCheck.roles.length === 0 &&
+      state.recipientsToCheck.users.length === 0;
+    return emptyRec && emptyToCheck;
+  };
+  const handleClose = () => setSnackbarOpen(false);
+  const handleCloseSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
   return (
-    <form>
+    <>
       <Button
+        sx={{ width: "30%", alignSelf: "left" }}
+        variant="outlined"
+        color="primary"
         onClick={() => {
           appendFile();
         }}
       >
-        Add
+        Добавить документ
       </Button>
-      <TableFiles inputsFiles={inputsFiles}></TableFiles>
+      <TableFiles inputsFiles={state.inputsFiles}></TableFiles>
+      <Paper elevation={3}>
+        <Stack
+          sx={{ pt: 3, pb: 3, pl: 2 }}
+          direction={isMobile ? "column" : "row"}
+          spacing={4}
+        >
+          <Stack spacing={2} sx={{ flex: 1, pr: 2 }}>
+            <Typography align="center">Получатели:</Typography>
+            <Stack direction="row" spacing={2}>
+              <FormControlLabel
+                label="Одинаковые"
+                control={
+                  <Checkbox
+                    value={asRecipients}
+                    onChange={(event) => {
+                      handleToCheck(event.target.checked);
+                    }}
+                  />
+                }
+              />
+            </Stack>
+            <ChooseRecipients
+              id="recipients"
+              recipientsChange={recipientsChange}
+            ></ChooseRecipients>
+          </Stack>
+          <Stack spacing={2} sx={{ flex: 1, pr: 2 }}>
+            {!asRecipients ? (
+              <>
+                <Typography align="center">Для ознакомления:</Typography>
+                <ChooseRecipients
+                  id="recipientsToCheck"
+                  recipientsChange={recipientsToCheckChange}
+                ></ChooseRecipients>
+              </>
+            ) : null}
+          </Stack>
+        </Stack>
+      </Paper>
       <Button
+        variant="contained"
+        color="primary"
+        sx={{ width: "30%", alignSelf: "center" }}
         onClick={() => {
-          console.log(state.allFiles);
+          handleUpload();
         }}
       >
-        Send
+        Загрузить
       </Button>
-      <Checkbox
-        value={asRecipients}
-        onChange={(event) => {
-          handleToCheck(event.target.checked);
-        }}
-      />
-      <p>As rec</p>
-      <ChooseRecipients
-        id="recipients"
-        recipientsChange={recipientsChange}
-      ></ChooseRecipients>
-      <p>To check</p>
-      {!asRecipients ? (
-        <ChooseRecipients
-          id="recipientsToCheck"
-          recipientsChange={recipientsToCheckChange}
-        ></ChooseRecipients>
-      ) : null}
-      <Button onClick={()=>{storeMessage(state);}}>AAA</Button>
-    </form>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackBar}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }

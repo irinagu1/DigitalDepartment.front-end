@@ -27,13 +27,13 @@ const permissionsNames = [
     info: {
       text: "Обо мне",
       description: "Просмотреть информацию о себе",
-      link: "/href",
+      link: "/users/about",
     },
   },
 ];
 const extraPermissionsNames = [
   {
-    name: "Просмотр пользователей",
+    name: "Архивирование документов",
     info: {
       text: "Пользователи",
       description: "Перейти к просмотру пользователей",
@@ -41,7 +41,7 @@ const extraPermissionsNames = [
     },
   },
   {
-    name: "Просмотр пользователей",
+    name: "Архивирование документов",
     info: {
       text: "Роли",
       description: "Перейти к просмотру ролей для пользователей",
@@ -49,7 +49,7 @@ const extraPermissionsNames = [
     },
   },
   {
-    name: "Просмотр пользователей",
+    name: "Архивирование документов",
     info: {
       text: "Справочник категорий документов",
       description: "Перейти к просмотру справочника категорий документов",
@@ -57,21 +57,21 @@ const extraPermissionsNames = [
     },
   },
   {
-    name: "Просмотр пользователей",
+    name: "Архивирование документов",
     info: {
       text: "Справочник статусов документов",
       description: "Перейти к просмотру справочника статусов документов",
       link: "/documentstatuses",
     },
   },
-  {
+ /* {
     name: "Просмотр пользователей",
     info: {
       text: "Архив",
       description: "Перейти в архив документов",
       link: "/users",
     },
-  },
+  },*/
 ];
 
 export default function Main() {

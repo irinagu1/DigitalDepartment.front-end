@@ -37,7 +37,7 @@ export default function TableDocumentCategories(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {info
+            {info.length !== 0
               ? info.map((row) => {
                   return (
                     <TableRow

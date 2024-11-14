@@ -18,6 +18,9 @@ import AddUser from "./pages/Users/AddUser";
 import UpdateUser from "./pages/Users/UpdateUser";
 import DocumentStatuses from "./pages/DocumentStatuses";
 import ChangePassword from "./pages/Users/ChangePassword";
+import DocumentsActions from "./pages/DocumentsActions";
+import DocumentReport from "./pages/DocumentReport";
+import AboutUser from "./components/Users/AboutUser";
 
 
 export const LoginContext = createContext();
@@ -52,8 +55,11 @@ function App() {
           <Route path="/roles/update" element={<UpdateRole/> } />
           <Route path="/users" element={<AllUsers/> } />
           <Route path="/users/add" element={<AddUser/> } />
+          <Route path="/users/about" element={<AboutUser/> } />
           <Route path="/users/update" element={<UpdateUser/> } />
           <Route path="users/password" element={<ChangePassword/>}/>
+          <Route path="/alldocuments/info" element={<DocumentsActions/>}/>
+          <Route path="/document/report" element={<DocumentReport/>}/>
         </Routes>
         </Header>
 

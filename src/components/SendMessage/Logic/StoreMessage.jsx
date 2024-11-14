@@ -6,6 +6,7 @@ import storeRecipients from "./StoreRecipients";
 export default async function storeMessage(props) {
   let isError = false;
   let letterId;
+  let creationDate;
 
   const createLetter = async () => {
     await fetchNewMessageId();
@@ -29,11 +30,12 @@ export default async function storeMessage(props) {
     }
     const data = await res.json();
     //set created letter id
-    letterId = data;
+    letterId = data.id;
+    creationDate = data.creationDate;
     console.log("created letter entity");
 
     //add documents entities and upload
-    await addFiles(letterId);
+    await addFiles(letterId, creationDate);
     if (isError) {
       return;
     }
@@ -56,51 +58,55 @@ export default async function storeMessage(props) {
   };
 
   //add documents entities and upload
-  const addFiles = async (info) => {
+  const addFiles = async (info, creatDate) => {
     var todayDate = new Date().toISOString().slice(0, 10);
-    props.allFiles.forEach(async (item) => {
-      let fn =  todayDate + "_" + item.file.name;
+    for (const item of props.allFiles) {  
+      //upload file
+
+      const fileNameForDb = await uploadFile(item.file);
+
+      if (fileNameForDb == "error") {
+        isError = true;
+        return "error";
+      }
+
+
+      let fn = todayDate + "_" + item.file.name;
       const documentDb = {
         Name: fn,
         DocumentStatusid: item.docS,
         DocumentCategoryId: item.docC,
         LetterId: info,
         isArchived: false,
+        CreationDate: creatDate,
       };
-      let res = await createDocument(documentDb);
-      if (res !== "ok") {
-        isError = true;
-        return "error";
-      }
-      //upload file
-    
-      let fileNameForDb = await uploadFile(item.file);
-      if (fileNameForDb == "error") {
-        isError = true;
-        return "error";
-      }
-    
+    //  const res = await createDocument(documentDb);
+      
+      const createDocument =
+        await fetch(baseurl + "documents/CreateDocument", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          },
+          body: JSON.stringify(documentDb),
+        }).then((res) => {
+          if (!res.ok) {
+            isError = true;
+            return "error";
+          } else return "ok";
+        });
+
+        if (createDocument !== "ok") {
+          isError = true;
+          return "error";
+        }
+
       //create doc entity
-     
-    });
- 
+    };
   };
 
-  const createDocument = async (obj) => {
-    await fetch(baseurl + "documents/CreateDocument", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("accessToken"),
-      },
-      body: JSON.stringify(obj),
-    }).then((res) => {
-      if (!res.ok) {
-        isError = true;
-        return "error";
-      } else return "ok";
-    });
-  };
+  
 
   await createLetter();
   if (isError) return "error";

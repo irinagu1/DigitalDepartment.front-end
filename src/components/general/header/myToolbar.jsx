@@ -40,7 +40,7 @@ export default function MyToolbar() {
         .includes("Просмотр пользователей") ? (
         <Button variant="text" color="info" size="small"
         onClick={() => {
-          navigate("/main");
+          navigate("/users/about");
         }}>
           Обо мне
         </Button>

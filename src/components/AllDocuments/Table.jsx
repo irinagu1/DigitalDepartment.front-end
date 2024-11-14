@@ -163,13 +163,13 @@ export default function Table(props) {
         DocumentCategoryId: newId,
       };
       updateDocument(newDocObject);
-
     }
   };
   return (
     <>
       {!props.loading ? (
         <DataGrid
+          disableColumnFilter
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
           rows={props.rows}
           columns={columns}

@@ -22,9 +22,8 @@ export default function UsersTable(props) {
         <ActionsUsers
           params={params}
           handleDeactivate={handleDeactivate}
-    
-          isActive={props.isActive}
 
+          isActive={props.isActive}
         />
       ),
     },

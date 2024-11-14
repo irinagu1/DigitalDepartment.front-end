@@ -4,6 +4,10 @@ import { baseurl } from "../../shared";
 import getParametersList from "./Logic/GetParametersList";
 import ChoosePanel from "../ChoosePanel";
 import Table from "./Table";
+import MyDataGrid from "./DocumentsTable.jsx/MyDataGrid";
+import TableWithOptions from "./DocumentsTable.jsx/TableWithOptions";
+
+
 
 const chipsForWho = ["Общие", "Лично мне"];
 const chipsWhatType = ["Для просмотра", "К ознакомлению"];
@@ -75,7 +79,7 @@ export default function MainGrid() {
     setSchipsState({ ...chipsState, whatType: name });
   }
 
-  function archive(params){
+  function archive(params) {
     updateAfterArchive(params.id);
     fetchData();
   }
@@ -94,7 +98,7 @@ export default function MainGrid() {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   function sign(params) {
     updateAfterSign(params.id);
@@ -110,7 +114,7 @@ export default function MainGrid() {
       },
     })
       .then((res) => {
-        console.log('result');
+        console.log("result");
         console.log(res);
         if (res.status !== 204) throw error;
       })
@@ -119,7 +123,15 @@ export default function MainGrid() {
       });
   }
 
+
+
   return (
+    <>
+    <TableWithOptions/>
+
+    </>
+  );
+ /* return (
     <>
       <ChoosePanel chips={chipsForWho} changeChip={changeChipForWho} />
       <p></p>
@@ -136,5 +148,5 @@ export default function MainGrid() {
       />
       <Box sx={{ height: 400, width: "100%" }}></Box>
     </>
-  );
+  );*/
 }

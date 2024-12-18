@@ -158,12 +158,21 @@ export default function AddUser() {
         handleValueChange={handlePasswordChange}
         labelName="Пароль"
       />
+       <Typography sx={{ mb: 2 }}>Выберите должность:</Typography>
+      <ChooseRoles
+        data={roles}
+        loading={loading}
+        handleChange={handleRoleshange}
+        textName="Должности"
+      />
       <Typography sx={{ mb: 2 }}>Выберите роли:</Typography>
       <ChooseRoles
         data={roles}
         loading={loading}
         handleChange={handleRoleshange}
+        textName="Роли"
       />
+      
       <Button
         sx={{ mt: 3}}
         variant="contained"

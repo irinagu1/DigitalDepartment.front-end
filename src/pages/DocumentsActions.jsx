@@ -97,7 +97,6 @@ export default function DocumentsActions() {
               Отчет по ознакомлению
             </Button>
           </Stack>
-
           <Container sx={{ m: 2, width: "50%" }}>
             <Typography>Категория: </Typography>
             <ParamsDropDown

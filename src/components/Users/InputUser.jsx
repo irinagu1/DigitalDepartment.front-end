@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function InputUser(props) {
@@ -31,9 +31,10 @@ export default function InputUser(props) {
   };
 
   return (
+    <Stack >
+    <Typography sx={{ pr:1}}>{props.labelName}:</Typography>
     <TextField
       id={props.labelName}
-      label={value ? "" : props.labelName}
       variant="outlined"
       fullWidth
       value={value}
@@ -46,7 +47,8 @@ export default function InputUser(props) {
             : "Обязательное поле"
           : ""
       }
-      sx={{ mb: 4 }}
+      sx={{ mb: 2 }}
     />
+    </Stack>
   );
 }

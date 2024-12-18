@@ -22,6 +22,7 @@ export default function ChooseRoles(props) {
     <>
       {!props.loading ? (
         <Autocomplete
+        sx={{mb:2}}
           multiple
           id="checkboxes-users"
           options={props.data}
@@ -43,7 +44,7 @@ export default function ChooseRoles(props) {
           }}
           style={{ width: 500 }}
           renderInput={(params) => (
-            <TextField {...params} label="Роли" placeholder="Роли" />
+            <TextField {...params} label={props.textName} placeholder={props.textName} />
           )}
           onChange={(event, value) => {
             handleChange(value);

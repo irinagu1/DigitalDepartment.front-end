@@ -11,6 +11,7 @@ import {
   Paper,
   Snackbar,
   Stack,
+  TextField,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -253,6 +254,14 @@ export default function MainForm(props) {
         Добавить документ
       </Button>
       <TableFiles inputsFiles={state.inputsFiles}></TableFiles>
+      <TextField
+        sx={{ pt: 1.5, pb: 1 }}
+          id="outlined-multiline-static"
+          label="Комментарий"
+          multiline
+          rows={3}
+          defaultValue=""
+        />
       <Paper elevation={3}>
         <Stack
           sx={{ pt: 3, pb: 3, pl: 2 }}

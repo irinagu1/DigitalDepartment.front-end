@@ -64,6 +64,14 @@ const extraPermissionsNames = [
       link: "/documentstatuses",
     },
   },
+  {
+    name: "Архивирование документов",
+    info: {
+      text: "Справочник должностей сотрудников",
+      description: "Перейти к просмотру справочника должностей",
+      link: "/positions",
+    },
+  },
  /* {
     name: "Просмотр пользователей",
     info: {

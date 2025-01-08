@@ -21,12 +21,11 @@ import ChangePassword from "./pages/Users/ChangePassword";
 import DocumentsActions from "./pages/DocumentsActions";
 import DocumentReport from "./pages/DocumentReport";
 import AboutUser from "./components/Users/AboutUser";
-
+import AllPositions from "./pages/Positions/AllPositions";
 
 export const LoginContext = createContext();
 
 function App() {
-
   const [loggedIn, setLoggedIn] = useState(
     localStorage.accessToken ? true : false
   );
@@ -41,30 +40,31 @@ function App() {
   return (
     <LoginContext.Provider value={[loggedIn, changeLoggedIn]}>
       <BrowserRouter>
-
-      <Header>
-        <Routes>
-          <Route path="/login" element={<SignIn />} />
-          <Route path="/main" element={<Main/>} />
-          <Route path="/sendmessage" element={<SendMessage/>} />
-          <Route path="/documentstatuses" element={<DocumentStatuses/> } />
-          <Route path="/documentcategories" element={<DocumentCategories/> } />
-          <Route path="/alldocuments" element={<AllDocuments/> } />
-          <Route path="/roles" element={<AllRoles/> } />
-          <Route path="/roles/add" element={<AddRole/> } />
-          <Route path="/roles/update" element={<UpdateRole/> } />
-          <Route path="/users" element={<AllUsers/> } />
-          <Route path="/users/add" element={<AddUser/> } />
-          <Route path="/users/about" element={<AboutUser/> } />
-          <Route path="/users/update" element={<UpdateUser/> } />
-          <Route path="users/password" element={<ChangePassword/>}/>
-          <Route path="/alldocuments/info" element={<DocumentsActions/>}/>
-          <Route path="/document/report" element={<DocumentReport/>}/>
-        </Routes>
+        <Header>
+          <Routes>
+            <Route path="/login" element={<SignIn />} />
+            <Route path="/main" element={<Main />} />
+            <Route path="/sendmessage" element={<SendMessage />} />
+            <Route path="/documentstatuses" element={<DocumentStatuses />} />
+            <Route
+              path="/documentcategories"
+              element={<DocumentCategories />}
+            />
+            <Route path="/alldocuments" element={<AllDocuments />} />
+            <Route path="/roles" element={<AllRoles />} />
+            <Route path="/roles/add" element={<AddRole />} />
+            <Route path="/roles/update" element={<UpdateRole />} />
+            <Route path="/users" element={<AllUsers />} />
+            <Route path="/users/add" element={<AddUser />} />
+            <Route path="/users/about" element={<AboutUser />} />
+            <Route path="/users/update" element={<UpdateUser />} />
+            <Route path="users/password" element={<ChangePassword />} />
+            <Route path="/alldocuments/info" element={<DocumentsActions />} />
+            <Route path="/document/report" element={<DocumentReport />} />
+            <Route path="/positions" element={<AllPositions />} />
+          </Routes>
         </Header>
-
       </BrowserRouter>
-
     </LoginContext.Provider>
   );
 }

@@ -34,7 +34,6 @@ const fetchData = async (parameter, withUsers) => {
     });
 };
 
-
 const chipsIsActive = ["Активные", "Архив"];
 
 export default function AllRoles() {
@@ -106,32 +105,28 @@ export default function AllRoles() {
         "Content-type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("accessToken"),
       },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          console.log(res);
-          setSnackbarMessage("Не удалось выполнить действие. ");
-          setSnackbarSeverity("error");
-        } else {
-          setSnackbarMessage("Успешно!");
-          setSnackbarSeverity("success");
-          const newList = roles.filter((el) => el.id !== roleId);
-          setRoles(newList);
-        }
-        setSnackbarOpen(true);
-        
-      });
+    }).then((res) => {
+      if (!res.ok) {
+        console.log(res);
+        setSnackbarMessage("Не удалось выполнить действие. ");
+        setSnackbarSeverity("error");
+      } else {
+        setSnackbarMessage("Успешно!");
+        setSnackbarSeverity("success");
+        const newList = roles.filter((el) => el.id !== roleId);
+        setRoles(newList);
+      }
+      setSnackbarOpen(true);
+    });
   };
   const handleAdd = () => {
     navigate("/roles/add");
   };
   const handleDeactivate = (id) => {
     deactivateRole(id);
- 
   };
   const handleDelete = (id) => {
     deleteRole(id);
-
   };
   const handleClose = () => setOpen(false);
   const handleCloseSnackBar = (event, reason) => {
@@ -143,29 +138,16 @@ export default function AllRoles() {
   return (
     <>
       <StyledContainer>
-        <Typography variant="h4"  gutterBottom>
+        <Typography variant="h4" gutterBottom>
           Управление ролями
         </Typography>
-        <Stack spacing={2}>
-          <Button
-            sx={{ width: "30%", alignSelf: "left" }}
-            variant="outlined"
-            color="primary"
-            onClick={handleAdd}
-          >
-            Добавить новую роль
-          </Button>
-          <Box
-            sx={{
-              display: "inline-flex",
-              flexDirection: "row",
-              gap: 3,
-              overflow: "auto",
-            }}
-          >
+        <Stack>
+          <Stack direction="row" spacing={3} sx={{ mb: 1 }}>
             <ChoosePanel chips={chipsIsActive} changeChip={handleChipChange} />
-          </Box>
-
+            <Button variant="contained" color="primary" onClick={handleAdd}>
+              Добавить новую роль
+            </Button>
+          </Stack>
           {loading ? (
             <CircularProgress />
           ) : (

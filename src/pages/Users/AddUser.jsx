@@ -16,6 +16,7 @@ import InputUser from "../../components/Users/InputUser";
 import ChooseRecipients from "../../components/SendMessage/ChooseRecipients";
 import ChooseElement from "../../components/SendMessage/ChooseElement";
 import ChooseRoles from "../../components/Users/ChooseRoles";
+import ChoosePosition from "../../components/Users/ChoosePosition";
 
 const fetchRoles = async () => {
   return fetch(baseurl + "roles", {
@@ -33,24 +34,43 @@ const fetchRoles = async () => {
     });
 };
 
+const fetchPositions = async () => {
+  return fetch(baseurl + "positions?isEnable=true&WithUsersAmount=false", {
+    headers: {
+      "Content-type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    },
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data);
+      return data;
+    });
+};
 export default function AddUser() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
+  const [positions, setPositions] = useState();
   const [user, setUser] = useState({
     firstName: "",
     secondName: "",
     lastName: "",
     username: "",
     password: "",
+    PositionId: "",
     Roles: [],
   });
 
   useEffect(() => {
     setRolesNames();
+    setPositionsNames();
+    setLoading(false);
   }, []);
 
   const setRolesNames = async () => {
@@ -60,6 +80,12 @@ export default function AddUser() {
     });
     setRoles(rolesToState);
   };
+
+  const setPositionsNames = async () => {
+    const positionsFromDB = await fetchPositions();
+    setPositions(positionsFromDB);
+  };
+
   const handleFirstNameChange = async (newValue) => {
     setUser({ ...user, firstName: newValue });
   };
@@ -79,6 +105,10 @@ export default function AddUser() {
     setUser({ ...user, Roles: newValue });
   };
 
+  const handlePositionChange = async (newValue) => {
+    setUser({ ...user, PositionId: newValue });
+  };
+
   const register = async () => {
     const newUser = {
       ...user,
@@ -86,9 +116,9 @@ export default function AddUser() {
       phoneNumber: "12345",
       isActive: true,
     };
-
     registerUser(newUser);
   };
+  
   const registerUser = async (newUser) => {
     return fetch(baseurl + "authentication", {
       method: "POST",
@@ -158,11 +188,11 @@ export default function AddUser() {
         handleValueChange={handlePasswordChange}
         labelName="Пароль"
       />
-       <Typography sx={{ mb: 2 }}>Выберите должность:</Typography>
-      <ChooseRoles
-        data={roles}
+      <Typography sx={{ mb: 2 }}>Выберите должность:</Typography>
+      <ChoosePosition
+        data={positions}
         loading={loading}
-        handleChange={handleRoleshange}
+        handleChange={handlePositionChange}
         textName="Должности"
       />
       <Typography sx={{ mb: 2 }}>Выберите роли:</Typography>
@@ -172,9 +202,9 @@ export default function AddUser() {
         handleChange={handleRoleshange}
         textName="Роли"
       />
-      
+
       <Button
-        sx={{ mt: 3}}
+        sx={{ mt: 3 }}
         variant="contained"
         color="primary"
         onClick={register}

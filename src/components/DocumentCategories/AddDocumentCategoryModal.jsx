@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Modal, Box, Typography, Button, Input } from "@mui/material";
 import { styled } from "@mui/system";
+import { AddCircleOutlineOutlined } from "@mui/icons-material";
 // Custom styles for the modal
 const StyledModal = styled(Modal)(({ theme }) => ({
   display: "flex",
@@ -90,8 +91,13 @@ export default function AddDocumentCategoryModal(props) {
           </ModalActions>
         </StyledBox>
       </StyledModal>
-      <Button onClick={props.toggleShow} variant="text" sx={{ width: "30%" }}>
-        Добавить новый элемент
+      <Button
+        onClick={props.toggleShow}
+        sx={{ borderRadius: 28 }}
+        variant="contained"
+        endIcon={<AddCircleOutlineOutlined />}
+      >
+        Добавить новую категорию
       </Button>
     </>
   );

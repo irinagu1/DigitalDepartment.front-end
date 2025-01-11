@@ -12,7 +12,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function CheckRoles(props) {
-console.log(props.data);
+;
 
 const handleChange = (event) => {
   props.updateChecked(event.target.name);

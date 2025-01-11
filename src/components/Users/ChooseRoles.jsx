@@ -12,7 +12,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export default function ChooseRoles(props) {
 
   const [data, setData] = useState(props.data);
-  console.log(props.data);
+ 
 
   function handleChange(value) {
     props.handleChange(value);

@@ -18,6 +18,7 @@ import ChooseElement from "../../components/SendMessage/ChooseElement";
 import ChooseRoles from "../../components/Users/ChooseRoles";
 import { useLocation } from "react-router-dom";
 import CheckRoles from "../../components/Users/CheckRoles";
+import ChangePosition from "../../components/Users/ChangePosition";
 
 const fetchData = async (param, id) => {
   const query = id !== null ? "?id=" + id : "";
@@ -32,7 +33,21 @@ const fetchData = async (param, id) => {
       return res.json();
     })
     .then((data) => {
-      console.log(data);
+      return data;
+    });
+};
+
+const fetchPositions = async () => {
+  return fetch(baseurl + "positions?isEnable=true&WithUsersAmount=false", {
+    headers: {
+      "Content-type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    },
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
       return data;
     });
 };
@@ -45,20 +60,29 @@ export default function UpdateUser() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
+  const [positions, setPositions] = useState();
   const [user, setUser] = useState({
     firstName: "",
     secondName: "",
     lastName: "",
-    username: "",
+    userName: "",
+    positionId: undefined,
     Roles: [],
   });
 
   useEffect(() => {
     fetchUser();
+    setPositionsNames();
+    setLoading(false);
     // setRolesNames();
   }, []);
+
+  const setPositionsNames = async () => {
+    const positionsFromDB = await fetchPositions();
+    setPositions(positionsFromDB);
+  };
 
   const fetchUser = async () => {
     const userDB = await fetchData("users/byid", state.id);
@@ -67,8 +91,10 @@ export default function UpdateUser() {
       secondName: userDB.secondName,
       lastName: userDB.lastName,
       userName: userDB.userName,
+      positionId: userDB.positionId,
       Roles: userDB.roles,
     };
+
     setUser(currentUser);
     const allRoles = await fetchData("roles");
     const userRoles = await fetchData("roles/user", state.id);
@@ -91,7 +117,11 @@ export default function UpdateUser() {
     setUser({ ...user, lastName: newValue });
   };
   const handleLoginChange = async (newValue) => {
-    setUser({ ...user, username: newValue });
+    setUser({ ...user, userName: newValue });
+  };
+
+  const handlePositionChange = async (newValue) => {
+    setUser({ ...user, positionId: newValue });
   };
 
   const handleRolesChange = async (newValue) => {
@@ -109,7 +139,7 @@ export default function UpdateUser() {
     const newRoles = roles.filter((e) => e.checked == true).map((e) => e.name);
     const newUser = {
       ...user,
-      email: user.username + "@mail.ru",
+      email: user.userName + "@mail.ru",
       phoneNumber: "12345",
       isActive: true,
       Roles: newRoles,
@@ -118,15 +148,19 @@ export default function UpdateUser() {
     updateUser(newUser);
   };
   const updateUser = async () => {
-    const rolesNames = roles.filter((r) => r.checked == true).map((r) => r.name);
-    const updates  = {
+    const rolesNames = roles
+      .filter((r) => r.checked == true)
+      .map((r) => r.name);
+    const updates = {
       Id: state.id,
       FirstName: user.firstName,
       SecondName: user.secondName,
       LastName: user.lastName,
       UserName: user.userName,
-      RolesNames: rolesNames,
+      PositionId: user.positionId,
+      RolesNames: rolesNames
     };
+    console.log(updates);
     //update user first
     //update his roles second
     return fetch(baseurl + "users/update", {
@@ -136,9 +170,7 @@ export default function UpdateUser() {
       },
       body: JSON.stringify(updates),
     }).then((res) => {
-      console.log(res);
       if (!res.ok) {
-        console.log(res);
         setSnackbarMessage("Не удалось обновить пользователя. ");
         setSnackbarSeverity("error");
       } else {
@@ -188,6 +220,14 @@ export default function UpdateUser() {
         handleValueChange={handleLoginChange}
         labelName="Логин"
       />
+
+      <ChangePosition
+        data={positions}
+        loading={loading}
+        handleChange={handlePositionChange}
+        currentPositionId={user.positionId}
+      />
+
       <CheckRoles
         data={roles}
         loading={loading}

@@ -51,16 +51,18 @@ export default function TableDocumentCategories(props) {
                         {row.connectedDocuments}
                       </TableCell>
                       <TableCell align="center">
-                        {" "}
+                        <Button variant="outlined" sx={{mr:1}} onClick={() => props.hadleEnabling(row)}>
+                          {props.isActive ? "Деактивировать" : "Активировать"}
+                        </Button>
                         {row.connectedDocuments === 0 ? (
-                          <Button onClick={() => props.delete(row.id)}>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={() => props.delete(row.id)}
+                          >
                             Удалить
                           </Button>
                         ) : null}
-                        <Button onClick={() => props.hadleEnabling(row)}>
-                          {props.isActive ? 'Деактивировать' : 'Активировать'}
-
-                        </Button>
                       </TableCell>
                     </TableRow>
                   );

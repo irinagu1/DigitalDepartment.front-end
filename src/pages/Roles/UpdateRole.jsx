@@ -52,18 +52,18 @@ export default function UpdateRole() {
     setPerms();
   }, []);
 
-
-  const fetchRole = async () => {
-    const roleFromDb = await fetchData("roles/GetById", "?roleId=" + state.id);
-    console.log(roleFromDb);
-    setRole(roleFromDb);
-  };
   const fetchCategories = async () => {
     const categoriesFromDB = await fetchData("permissions/categories");
     const allC = ["все"].concat(categoriesFromDB);
     setCategories(allC);
   };
-
+  
+  const fetchRole = async () => {
+    const roleFromDb = await fetchData("roles/GetById", "?roleId=" + state.id);
+    console.log(roleFromDb);
+    setRole(roleFromDb);
+  };
+ 
   const setPerms = async () => {
     const permsForRoleFromDb = await fetchData(
       "permissions/GetByRoleId",

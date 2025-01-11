@@ -30,6 +30,19 @@ const fetchData = async (parameter) => {
     });
 };
 
+const deleteUser = async (userId) => {
+  const path = baseurl + "authentication?userId=" + userId;
+  let response = await fetch(path, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    },
+  });
+  if (response.ok) return true;
+  else return false;
+};
+
 const chipsIsActive = ["Активные", "Архив"];
 
 export default function AllUsers() {
@@ -75,7 +88,6 @@ export default function AllUsers() {
   const handleDeactivate = (id) => {
     deactivateUser(id);
   };
- 
 
   const deactivateUser = async (userId) => {
     const path = baseurl + "users/toArchive?userId=" + userId;
@@ -104,6 +116,21 @@ export default function AllUsers() {
         return data;
       });
   };
+
+  const handleDelete = async (id) => {
+    const result = await deleteUser(id);
+    if (!result) {
+      setSnackbarMessage("Не удалось выполнить действие. ");
+      setSnackbarSeverity("error");
+    } else {
+      const newList = users.filter((el) => el.id !== id);
+      setUsers(newList);
+      setSnackbarMessage("Успешно!");
+      setSnackbarSeverity("success");
+    }
+    setSnackbarOpen(true);
+  };
+
   const handleClose = () => setOpen(false);
   const handleCloseSnackBar = (event, reason) => {
     if (reason === "clickaway") {
@@ -118,20 +145,18 @@ export default function AllUsers() {
           Управление пользователями
         </Typography>
         <Stack spacing={2}>
-          <Button
-            sx={{ width: "30%", alignSelf: "left" }}
-            variant="outlined"
-            color="primary"
-            onClick={handleAdd}
-          >
-            Добавить нового пользователя
-          </Button>
-          <ChoosePanel chips={chipsIsActive} changeChip={handleChipChange} />
+          <Stack direction="row" spacing={3} sx={{ mb: 1 }}>
+            <ChoosePanel chips={chipsIsActive} changeChip={handleChipChange} />
+            <Button variant="contained" color="primary" onClick={handleAdd}>
+              Добавить нового пользователя
+            </Button>
+          </Stack>
           <UsersTable
             loading={loading}
             rows={users}
             chip={activeChip}
             handleDeactivate={handleDeactivate}
+            handleDelete={handleDelete}
             isActive={isActive}
           />
         </Stack>

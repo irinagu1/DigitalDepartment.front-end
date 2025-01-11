@@ -130,6 +130,7 @@ export default function AllPositions() {
 
   const deactivatePosition = async (positionId, isEnable) => {
     const newObject = returnPositionForUpdate(positionId, true,!isEnable);
+    console.log(newObject);
     const deactivateResult = await deactivateData(positionId, newObject);
     if (deactivateResult == "error") {
       setSnackbarMessage("Не удалось деактивировать.");
@@ -197,7 +198,7 @@ export default function AllPositions() {
     if(!newElement)
       throw new Error("Not found an element in list");
     if(toDeactivate)
-      newElement= {...newElement, isEnable: isEnable};
+      newElement= {...newElement, isEnable: !isEnable};
     if(newName)
       newElement={...newElement, name: newName};
     return newElement;

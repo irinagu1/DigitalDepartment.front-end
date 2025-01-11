@@ -46,35 +46,31 @@ export default function AddRole() {
     activePermissions: [],
   });
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const categoriesFromDB = await fetchData("permissions/categories");
-        const allC = ["все"].concat(categoriesFromDB);
-      setCategories(categories.concat(allC));
-    };
-
-    const fetchPermissions = async () => {
-      const permissionFromDB = await fetchData("permissions");
-      const permissonswWithChecked = permissionFromDB.map((el) => {
-        return { ...el, checked: false };
-      });
-      setPageState({
-        activeCategory: "все",
-        activePermissions: permissonswWithChecked,
-      });
-      setPermissions(permissonswWithChecked);
-    };
+  useEffect(() => {  
     setLoading(true);
     fetchCategories();
     fetchPermissions();
-
     setLoading(false);
   }, []);
 
-  /*  useEffect(() => {
-    setPageState({ ...pageState, activePermissions: permissions });
-  }, [permissions]);
-*/
+  const fetchCategories = async () => {
+    const categoriesFromDB = await fetchData("permissions/categories");
+    const allC = ["все"].concat(categoriesFromDB);
+    setCategories(allC);
+  };
+
+  const fetchPermissions = async () => {
+    const permissionFromDB = await fetchData("permissions");
+    const permissonswWithChecked = permissionFromDB.map((el) => {
+      return { ...el, checked: false };
+    });
+    setPageState({
+      activeCategory: "все",
+      activePermissions: permissonswWithChecked,
+    });
+    setPermissions(permissonswWithChecked);
+  };
+  
   const handleRoleNameChange = (value) => {
     setRoleName(value);
   };

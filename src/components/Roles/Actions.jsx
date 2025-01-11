@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { baseurl } from "../../shared";
 
@@ -17,6 +17,7 @@ export default function Actions(props) {
   };
   return (
     <>
+    <Stack direction="row" spacing={1} justifyContent="center">
       <Button variant="outlined" onClick={handleEdit}>
         Редактировать
       </Button>
@@ -28,6 +29,7 @@ export default function Actions(props) {
           Удалить
         </Button>
       ) : null}
+      </Stack>
     </>
   );
 }

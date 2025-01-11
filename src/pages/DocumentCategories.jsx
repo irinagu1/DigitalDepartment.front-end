@@ -11,7 +11,7 @@ import AddDocumentCategory from "../components/DocumentCategories/AddDocumentCat
 import AddDocumentCategoryModal from "../components/DocumentCategories/AddDocumentCategoryModal";
 import Modal from "@mui/material/Modal";
 import { LoginContext } from "../App";
-import { styled } from "@mui/system";
+import { Stack, styled } from "@mui/system";
 import ChoosePanel from "../components/ChoosePanel";
 import StyledContainer from "../components/StyledContainer";
 
@@ -47,7 +47,6 @@ export default function DocumentCategories() {
 
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
-  const [changed, setChanged] = useState();
 
   useEffect(() => {
     fetchCategories();
@@ -55,7 +54,7 @@ export default function DocumentCategories() {
 
   useEffect(() => {
     fetchCategories();
-  }, [isActive, changed]);
+  }, [isActive]);
 
   const fetchCategories = async () => {
     const categoriesFromDB = await fetchData(isActive);
@@ -111,14 +110,17 @@ export default function DocumentCategories() {
 
   function DeleteDocCategory(id) {
     manipulateDocCat({}, "DELETE", id);
-    setChanged(id);
+    const newList = docCategories.filter((el) => el.id !== id);
+    setDocCategories(newList);
   }
 
   function HandleEnablingDocCategory(oldData) {
     const newObj = { Name: oldData.name, IsEnable: !oldData.isEnable };
     manipulateDocCat(newObj, "PUT", oldData.id);
-    setChanged(oldData.id);
+    const newList = docCategories.filter((el) => el.id !== oldData.id);
+    setDocCategories(newList);
   }
+
   const handleChipChange = (newChip) => {
     setActiveChip(newChip);
     setIsActive(!isActive);
@@ -134,25 +136,17 @@ export default function DocumentCategories() {
   return (
     <>
       <StyledContainer>
-      <Typography variant="h4" gutterBottom>
-            Категории документов
-          </Typography>
-        <AddDocumentCategoryModal
-          newDocCategory={newDocCategory}
-          show={show}
-          toggleShow={toggleShow}
-        />
-
-        <Box
-          sx={{
-            display: "inline-flex",
-            flexDirection: "row",
-            gap: 3,
-            overflow: "auto",
-          }}
-        >
-          <ChoosePanel chips={chipsIsActive} changeChip={handleChipChange} />
-        </Box>
+        <Typography variant="h4" gutterBottom>
+          Категории документов
+        </Typography>
+        <Stack direction="row" spacing={3}>
+        <ChoosePanel chips={chipsIsActive} changeChip={handleChipChange} />
+          <AddDocumentCategoryModal
+            newDocCategory={newDocCategory}
+            show={show}
+            toggleShow={toggleShow}
+          />
+        </Stack>
         <TableDocumentCategories
           source={docCategories}
           delete={DeleteDocCategory}

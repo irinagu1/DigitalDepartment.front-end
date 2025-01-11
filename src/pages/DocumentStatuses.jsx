@@ -11,7 +11,7 @@ import AddDocumentCategory from "../components/DocumentCategories/AddDocumentCat
 import AddDocumentCategoryModal from "../components/DocumentCategories/AddDocumentCategoryModal";
 import Modal from "@mui/material/Modal";
 import { LoginContext } from "../App";
-import { styled } from "@mui/system";
+import { Stack, styled } from "@mui/system";
 import ChoosePanel from "../components/ChoosePanel";
 import { v4 as uuidv4 } from "uuid";
 const fetchData = async (parameter) => {
@@ -58,7 +58,7 @@ export default function DocumentStatuses() {
 
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
-  const [changed, setChanged] = useState();
+
 
   useEffect(() => {
     fetchCategories();
@@ -66,7 +66,7 @@ export default function DocumentStatuses() {
 
   useEffect(() => {
     fetchCategories();
-  }, [isActive, changed]);
+  }, [isActive]);
 
   const fetchCategories = async () => {
     const categoriesFromDB = await fetchData(isActive);
@@ -122,13 +122,15 @@ export default function DocumentStatuses() {
 
   function DeleteDocStatus(id) {
     manipulateDocStat({}, "DELETE", id);
-    setChanged( uuidv4());
+    const newList = docStatuses.filter((el)=> el.id !== id);
+    setdocStatuses(newList);
   }
 
   function HandleEnablingDocStatus(oldData) {
     const newObj = { Name: oldData.name, IsEnable: !oldData.isEnable };
     manipulateDocStat(newObj, "PUT", oldData.id);
-    setChanged(uuidv4());
+    const newList = docStatuses.filter((el)=> el.id !== oldData.id);
+    setdocStatuses(newList);
   }
   const handleChipChange = (newChip) => {
     setActiveChip(newChip);
@@ -145,27 +147,17 @@ export default function DocumentStatuses() {
   return (
     <>
       <StyledContainer>
-        <div>
-    <Typography variant="h4" gutterBottom>
-            Статусы документов
-          </Typography>
-        </div>
-        <AddDocumentCategoryModal
-          newDocCategory={newDocStatus}
-          show={show}
-          toggleShow={toggleShow}
-        />
-
-        <Box
-          sx={{
-            display: "inline-flex",
-            flexDirection: "row",
-            gap: 3,
-            overflow: "auto",
-          }}
-        >
+        <Typography variant="h4" gutterBottom>
+          Статусы документов
+        </Typography>
+        <Stack direction="row" spacing={3}>
           <ChoosePanel chips={chipsIsActive} changeChip={handleChipChange} />
-        </Box>
+          <AddDocumentCategoryModal
+            newDocCategory={newDocStatus}
+            show={show}
+            toggleShow={toggleShow}
+          />
+        </Stack>
         <TableDocumentCategories
           source={docStatuses}
           delete={DeleteDocStatus}

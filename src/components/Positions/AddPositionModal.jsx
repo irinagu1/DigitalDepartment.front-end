@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Modal, Box, Typography, Button, Input } from "@mui/material";
 import { styled } from "@mui/system";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
-// Custom styles for the modal
 const StyledModal = styled(Modal)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
